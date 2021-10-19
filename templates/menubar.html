@@ -2,9 +2,62 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>menu</title>
+    <script src="https://kit.fontawesome.com/2f61ce9ce6.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,300;1,600&display=swap" rel="stylesheet">
 </head>
-<body>
+<style>
+    *{
+        font-family: 'Source Sans Pro', sans-serif;
+        font-weight: bolder;
+    }
+    .navbar{
+        display:flex;
+        justify-content: space-around;
+        align-items: center;
+        background-color: lightsteelblue;
+        padding: 5px 10px;
+    }
+    body {
+        margin: 0;
+    }
+    a {
+        text-decoration: none;
+        color: white;
+    }
+    .navbar-logo{
+        font-size: 26px;
+        color: lightslategray;
+    }
+    .navbar_menu {
+        display: flex;
+        list-style: none;
+        padding-left: 0;
+        font-size: 17px;
+    }
+    .navbar_menu li{
+        padding: 8px 12px;
+    }
+    .navbar_menu li:hover {
+        background-color: lightslategray;
+        border-radius: 5px;
+    }
 
+</style>
+<body>
+     <nav class="navbar">
+        <div class="navbar-logo">
+       <i class="far fa-calendar-check"></i>
+            <a href="">Calendar Diary</a>
+        </div>
+
+         <ul class="navbar_menu">
+             <li><a href="">About us</a></li>
+             <li><a href="">글쓰기</a></li>
+         </ul>
+
+     </nav>
 </body>
 </html>
