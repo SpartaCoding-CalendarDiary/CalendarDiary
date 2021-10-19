@@ -20,7 +20,7 @@
         alert("파일 확장자를 확인해주세요(jpg,jpeg,png,gif) 가능")
             return false;}
 
-        function write()
+    function write(){
         let img = $('#uploadFile').value();
         let text = $('#in_text').value();
         let date = $('#datepicker').value();
@@ -34,7 +34,7 @@
                 alert(response["msg"] );
             }
         }
-    })
+    })}
 
 
 
@@ -86,14 +86,14 @@
 <div class="write">
     <h3>오늘 하루를 적어보세요</h3>
     <p>date
-        <input type="text" id="datepicker">
+        <input type="text" id="datepicker"/>
     </p>
 
     <form enctype="multipart/form-data" action="" method="POST">
         <div class="in_text">
             <textarea style="margin-top: 16px;" name="content" placeholder="내용을 입력해주세요" rows="20" cols="80" required></textarea>
         </div>
-        <input id="name">
+        <input id="name"/>
         <input id="uploadFile"type='file' alt="파일첨부">
         <button id="upload" type="submit" onclick="fileCheck()">업로드</button>
         </form>
