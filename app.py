@@ -2,7 +2,7 @@ from flask import Flask, render_template
 app = Flask(__name__)
 
 from pymongo import MongoClient
-client = MongoClient('mongodb://test:test@13.125.65.246', 27017)
+client = MongoClient('mongodb://test:test@디비서버주소', 27017)#서버주소는 git repository에는 올리지 않기
 db = client.dbcalendardiary
 
 ## HTML을 주는 부분
