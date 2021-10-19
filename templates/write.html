@@ -18,8 +18,9 @@
         if(ext == ".jpg" || ext ==".jpeg" || ext == ".png" || ext == "gif" )
             return true;
         alert("파일 확장자를 확인해주세요(jpg,jpeg,png,gif) 가능")
-            return false;
+            return false;}
 
+        function write()
         let img = $('#uploadFile').value();
         let text = $('#in_text').value();
         let date = $('#datepicker').value();
@@ -35,7 +36,7 @@
         }
     })
 
-    }
+
 
  $(function() {
        //input을 datepicker로 선언
