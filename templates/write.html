@@ -19,6 +19,22 @@
             return true;
         alert("파일 확장자를 확인해주세요(jpg,jpeg,png,gif) 가능")
             return false;
+
+        let img = $('#uploadFile').value();
+        let text = $('#in_text').value();
+        let date = $('#datepicker').value();
+        let name = $('#name').value();
+        $.ajax({
+        type: "POST",
+        url:  "/diaries",
+        data: {img_give:img,text_give:text,date_give:date,name_give:name},
+        success: function (response) {
+            if (response["result"] == "success") {
+                alert(response["msg"] );
+            }
+        }
+    })
+
     }
 
  $(function() {
@@ -46,11 +62,6 @@
        $('#datepicker').datepicker('setDate', 'today'); //(-1D:하루전, -1M:한달전, -1Y:일년전), (+1D:하루후, -1M:한달후, -1Y:일년후)
    });
 
-    function dayselect(){
-        const daycheck = document.getElementById("datepicker")
-        console.log(daycheck)
-
-    }
 
 
 
@@ -81,6 +92,7 @@
         <div class="in_text">
             <textarea style="margin-top: 16px;" name="content" placeholder="내용을 입력해주세요" rows="20" cols="80" required></textarea>
         </div>
+        <input id="name">
         <input id="uploadFile"type='file' alt="파일첨부">
         <button id="upload" type="submit" onclick="fileCheck()">업로드</button>
         </form>
