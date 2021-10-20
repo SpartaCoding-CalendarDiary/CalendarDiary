@@ -15,11 +15,18 @@ def home():
 def write():
    return render_template('write.html')
 
+#(테스트용 링크)
+@app.route('/menubar')
+def menubar():
+   return render_template('menubar.html')
+
+@app.route('/aboutus')
+def menubar():
+   return render_template('aboutus.html')
+
 ## API역할을 하는 부분
 #유저가 작성한 글을 저장한다(front->server)
 @app.route('/diaries', methods=['POST'])  # 은찬
-
-
 def write_diary():
     text_receive = request.form['text_give']
     img_receive = request.form['img_give']
@@ -42,13 +49,13 @@ def write_diary():
 #이 API는 글을 실제로 불러올 때
 # @app.route('/diaries', methods=['GET']) #은찬
 # def show_diary():
-#     변수명 = db.디비콜렉션명.find_one({'찾을key': 찾을value})
+#     변수명 = db.diaries.find_one({'찾을key': 찾을value})
 #     return jsonify({'변수명s': 변수명})
 #
 #해당 날짜의 사진을 불러온다(server->front)
 # @app.route('/calendar', methods=['GET'])#유진
 # def read_calendar():
-#     all변수명 = list(db.디비콜렉션명.find({},{'_id':False}))
+#     all변수명 = list(db.diaries.find({},{'_id':False}))
 #     return jsonify({'all~~변수명s': all~~변수명})
 
 if __name__ == '__main__':
