@@ -7,6 +7,39 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <title>Write</title>
 </head>
+
+<style>
+    .write {
+        max-width: 100vw;
+        height: 50vh;
+        margin: auto;
+        padding: 16px;
+        text-align: center;
+    }
+
+  #datepicker{
+      margin: auto;
+  }
+</style>
+<body>
+
+
+<div class="write">
+    <h3>오늘 하루를 적어보세요</h3>
+    <p>date
+        <input value="" type="text" id="datepicker" required>
+    </p>
+        <div class="in_text">
+            <textarea id="text" value="" style="margin-top: 16px;" name="content" placeholder="내용을 입력해주세요" rows="20" cols="80" required></textarea>
+        </div>
+        <input id="name"  value="" required>
+        <input id="uploadFile"type='file' onsubmit="fileCheck()" alt="파일첨부" value="" required>
+        <button id="upload" type="submit" onclick=" write_diary();">업로드</button>
+
+
+</div>
+
+</body>
 <script type="text/javascript">
     function fileCheck(){
         let uploadFile =document.getElementById("uploadFile").files[0];
@@ -15,25 +48,36 @@
         let ext = fileName.substring(fileName.lastIndexOf('.'));
 
 
-        if(ext == ".jpg" || ext ==".jpeg" || ext == ".png" || ext == "gif" )
+        if(ext == ".JPG" || ext ==".JPEG" || ext == ".PNG" || ext == "GIF" )
             return true;
         alert("파일 확장자를 확인해주세요(jpg,jpeg,png,gif) 가능")
             return false;}
 
+
     function write_diary(){
-        let img = $('#uploadFile').value();
-        let text = $('#in_text').value();
-        let date = $('#datepicker').value();
-        let name = $('#name').value();
+
+
+      let name = document.querySelector("#name").value;
+      let text = document.querySelector("#text").value;
+      let date = document.querySelector("#datepicker").value;
+      let img = document.querySelector("#uploadFile").value;
+
+      if (!img){
+          console.log("비어있다")
+      }else{
+          console.log("값있다")
+      }
+
+
         $.ajax({
         type: "POST",
         url:  "/diaries",
         data: {img_give:img,text_give:text,date_give:date,name_give:name},
         success: function (response) {
-            if (response["result"] == "success") {
-                alert(response["msg"] );
+            if (response["result"] == "success")
+            {alert(response["msg"] );}
             }
-        }
+
     })}
 
 
@@ -67,39 +111,4 @@
 
 
 </script>
-<style>
-    .write {
-        max-width: 100vw;
-        height: 50vh;
-        margin: auto;
-        padding: 16px;
-        text-align: center;
-    }
-
-  #datepicker{
-      margin: auto;
-  }
-</style>
-<body>
-
-
-<div class="write">
-    <h3>오늘 하루를 적어보세요</h3>
-    <p>date
-        <input type="text" id="datepicker"/>
-    </p>
-
-    <form enctype="multipart/form-data" action="" method="POST">
-        <div class="in_text">
-            <textarea style="margin-top: 16px;" name="content" placeholder="내용을 입력해주세요" rows="20" cols="80" required></textarea>
-        </div>
-        <input id="name"/>
-        <input id="uploadFile"type='file' alt="파일첨부">
-        <button id="upload" type="submit" onclick="fileCheck(); write_diary(); href="calendar.html" >업로드</button>
-        </form>
-
-
-</div>
-
-</body>
 </html>
