@@ -1,8 +1,9 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, jsonify
 app = Flask(__name__)
 
 from pymongo import MongoClient
-client = MongoClient('mongodb://test:test@---------', 27017)#서버주소는 git repository에는 올리지 않기
+client = MongoClient('mongodb://test:test@비밀', 27017)#서버주소는 git repository에는 올리지 않기
+
 db = client.dbcalendardiary
 
 ## HTML을 주는 부분
