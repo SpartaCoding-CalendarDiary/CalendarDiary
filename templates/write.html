@@ -20,7 +20,7 @@
         alert("파일 확장자를 확인해주세요(jpg,jpeg,png,gif) 가능")
             return false;}
 
-    function write(){
+    function write_diary(){
         let img = $('#uploadFile').value();
         let text = $('#in_text').value();
         let date = $('#datepicker').value();
@@ -95,7 +95,7 @@
         </div>
         <input id="name"/>
         <input id="uploadFile"type='file' alt="파일첨부">
-        <button id="upload" type="submit" onclick="fileCheck()" href="calendar.html">업로드</button>
+        <button id="upload" type="submit" onclick="fileCheck(); write_diary();" href="calendar.html">업로드</button>
         </form>
 
 
