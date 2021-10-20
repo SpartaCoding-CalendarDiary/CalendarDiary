@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, jsonify
 app = Flask(__name__)
 
 from pymongo import MongoClient
-client = MongoClient('mongodb://test:test@비밀', 27017)#서버주소는 git repository에는 올리지 않기
+client = MongoClient('mongodb://test:test@비밀', 27017)
 
 db = client.dbcalendardiary
 
@@ -50,7 +50,6 @@ def write_diary():
 # def read_calendar():
 #     all변수명 = list(db.디비콜렉션명.find({},{'_id':False}))
 #     return jsonify({'all~~변수명s': all~~변수명})
-
 
 if __name__ == '__main__':
    app.run('0.0.0.0',port=5000,debug=True)
