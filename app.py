@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, redirect
+from flask import Flask, render_template, request, jsonify
 app = Flask(__name__)
 
 from pymongo import MongoClient
@@ -33,16 +33,8 @@ def write_diary():
     date_receive = request.form['date_give']
     name_receive = request.form['name_give']
 
-    doc = {
-        'text': text_receive,
-        'img': img_receive,
-        'date': date_receive,
-        'name': name_receive
-    }
     # DB에 해당 날짜에 저장된 사진 있나 확인하기 위해 DB에서 date를 조건으로 돌아오는 객체가 있나 확인.
     result = db.diaries.find_one({'date': date_receive}, {'_id': False})
-
-    db.diaries.insert_one(doc)
 
     # DB에서 가져온 값이 null이면(해당 날짜로 저장된 다이어리가 없으면) DB에 저장하기
     if not result:
@@ -53,14 +45,10 @@ def write_diary():
             'name': name_receive
         }
         db.diaries.insert_one(doc)
-        return redirect('/')  # 글 작성 완료 후 calendar페이지로 이동한다
+        return jsonify({'msg': '저장성공'})  #프론트-글저장성공alert->calendar페이지로 이동해야함
     # 가져온 값이 null이 아니면(해당 날짜로 저장된 다이어리가 있으면) DB에 저장하지 않기.
     else:
-        return redirect('/write')  # 글 작성 실패 후 다시 글쓰기 페이지 redirect
-        # 질문. redirect때 /write페이지로 옮기고 + 실패 alert 띄우기 위한 msg같이 담으려면?
-        # return jsonify({'msg': '중복!'})
-
-    return jsonify({'msg': '저장 완료!'})
+        return jsonify({'msg': '저장실패'})#프론트-글쓰기페이지에서 저장실패라고 alert 띄워야.
 
 #
 #해당 날짜(key)의 글을 불러온다(server->front)
