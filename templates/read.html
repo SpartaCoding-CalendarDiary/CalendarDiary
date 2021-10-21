@@ -1,31 +1,51 @@
 <!doctype html>
 <html>
 <head>
- <meta charset="UTF-8">
+    <meta charset="UTF-8">
     <title>read</title>
 </head>
 <style>
- .wrap{
-     width: 80vw;
-     height: 150vw;
-     padding: 16px;
-     margin: auto;
- }
+    .wrap {
+        width: 80vw;
+        height: 150vw;
+        padding: 16px;
+        margin: auto;
+    }
 
 </style>
 <body>
-<div class="wrap">
- <!--사진불러오기-->
-<div id="in_img">
-    <img src="..."/>
-</div>
-    <hr/>
- <!--글내용불러오기-->
-<div>
- <div class="text">
-<textarea name="content" rows="20" cols="80" required></textarea>
-</div>
-    <a class="btn-list" href="..."><button type="button" class="btn btn-outline-dark">목록</button></a>
+ <div id="view_diaries">
 </div>
 </body>
+<script>
+    function showdiaries() {
+        $.ajax({
+            type: "GET",
+            url: "/diaries",
+            data: {},
+            success: function (response) {
+                let diary = response['diaries']
+                for (let i = 0; i < diaries.length; i++) {
+                    let name = diaries[i]['name']
+                    let img = diaries[i]['img']
+                    let text = diaries[i]['text']
+                    let date = diaries[i]['text']
+
+
+                    let temp_html = `
+                                    <div class="card" style="width: 18rem;">
+                                      <img class="card-img-top" src="${img}" alt="Card image cap">
+                                      <div class="card-body">
+                                      <h3>${date}</h3>
+                                        <p>${name}</p>
+                                        <p class="card-text">${text}</p>
+                                      </div>
+                                    </div>
+                            `
+                    $('#view_diaries').append(temp_html)
+                }
+            }
+        })
+    }
+</script>
 </html>
