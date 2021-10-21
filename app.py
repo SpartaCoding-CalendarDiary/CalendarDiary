@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect
 app = Flask(__name__)
 
 from pymongo import MongoClient
@@ -32,8 +32,26 @@ def write_diary():
         'date': date_receive,
         'name': name_receive
     }
+    # DB에 해당 날짜에 저장된 사진 있나 확인하기 위해 DB에서 date를 조건으로 돌아오는 객체가 있나 확인.
+    result = db.diaries.find_one({'date': date_receive}, {'_id': False})
 
     db.diaries.insert_one(doc)
+
+    # DB에서 가져온 값이 null이면(해당 날짜로 저장된 다이어리가 없으면) DB에 저장하기
+    if not result:
+        doc = {
+            'text': text_receive,
+            'img': img_receive,
+            'date': date_receive,
+            'name': name_receive
+        }
+        db.diaries.insert_one(doc)
+        return redirect('/')  # 글 작성 완료 후 calendar페이지로 이동한다
+    # 가져온 값이 null이 아니면(해당 날짜로 저장된 다이어리가 있으면) DB에 저장하지 않기.
+    else:
+        return redirect('/write')  # 글 작성 실패 후 다시 글쓰기 페이지 redirect
+        # 질문. redirect때 /write페이지로 옮기고 + 실패 alert 띄우기 위한 msg같이 담으려면?
+        # return jsonify({'msg': '중복!'})
 
     return jsonify({'msg': '저장 완료!'})
 
@@ -46,10 +64,12 @@ def write_diary():
 #     return jsonify({'변수명s': 변수명})
 #
 #해당 날짜의 사진을 불러온다(server->front)
-# @app.route('/calendar', methods=['GET'])#유진
-# def read_calendar():
-#     all변수명 = list(db.디비콜렉션명.find({},{'_id':False}))
-#     return jsonify({'all~~변수명s': all~~변수명})
+@app.route('/calendar', methods=['GET'])
+def read_calendar():
+     allPic = list(db.diaries.find({},{'_id':False}))
+     print(allPic)
+     return jsonify({'allPics': allPic})
+#선진님 front페이지에서 GET해올때 쓸 변수명은 allPics. allPics리스트 안에 사진과 날짜가 여러개 들어있다.
 
 
 if __name__ == '__main__':
