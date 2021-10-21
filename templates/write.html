@@ -32,7 +32,7 @@
         <div class="in_text">
             <textarea id="text" value="" style="margin-top: 16px;" name="content" placeholder="내용을 입력해주세요" rows="20" cols="80" required></textarea>
         </div>
-        <input id="name"  value="" required>
+        <input id="name" placeholder="이름ex)홍길동의 일기"  value="" required>
         <input id="uploadFile"type='file' onsubmit="fileCheck()" alt="파일첨부" value="" required>
         <button id="upload" type="submit" onclick=" write_diary();">업로드</button>
 
@@ -75,7 +75,12 @@
         data: {img_give:img,text_give:text,date_give:date,name_give:name},
         success: function (response) {
             if (response["result"] == "success")
-            {alert(response["msg"] );}
+            {alert(response["업로드 완료"] );
+                window.location.replace('/')}
+            else {alert(response['내일 다시 이용해주세요']);
+                window.location.reload();}
+            }
+
             }
 
     })}
