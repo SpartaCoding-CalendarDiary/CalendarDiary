@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, jsonify
 app = Flask(__name__)
 
 from pymongo import MongoClient
-client = MongoClient('mongodb://test:test@13.125.65.246', 27017)
+client = MongoClient('mongodb://test:test@비밀', 27017)
 
 db = client.dbcalendardiary
 
