@@ -21,7 +21,7 @@ def menubar():
    return render_template('menubar.html')
 
 @app.route('/aboutus')
-def menubar():
+def aboutus():
    return render_template('aboutus.html')
 
 ## API역할을 하는 부분
@@ -32,18 +32,18 @@ def write_diary():
     img_receive = request.form['img_give']
     date_receive = request.form['date_give']
     name_receive = request.form['name_give']
-
+    doc = {
+        'text': text_receive,
+        'img': img_receive,
+        'date': date_receive,
+        'name': name_receive
+    }
+    print(doc)
     # DB에 해당 날짜에 저장된 사진 있나 확인하기 위해 DB에서 date를 조건으로 돌아오는 객체가 있나 확인.
     result = db.diaries.find_one({'date': date_receive}, {'_id': False})
 
     # DB에서 가져온 값이 null이면(해당 날짜로 저장된 다이어리가 없으면) DB에 저장하기
     if not result:
-        doc = {
-            'text': text_receive,
-            'img': img_receive,
-            'date': date_receive,
-            'name': name_receive
-        }
         db.diaries.insert_one(doc)
         return jsonify({'msg': '저장성공'})  #프론트-글저장성공alert->calendar페이지로 이동해야함
     # 가져온 값이 null이 아니면(해당 날짜로 저장된 다이어리가 있으면) DB에 저장하지 않기.
