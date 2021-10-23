@@ -33,13 +33,13 @@
     <h3>오늘 하루를 적어보세요</h3>
 
     <p>date
-        <input value="" name="date_give" type="text" id="datepicker">
+        <input value=""  type="text" id="datepicker">
     </p>
     <div class="in_text">
-        <textarea id="text" value="" style="margin-top: 16px;" name="text_give" placeholder="내용을 입력해주세요" rows="20"
+        <textarea id="text" value="" style="margin-top: 16px;" placeholder="내용을 입력해주세요" rows="20"
                   cols="80" required></textarea>
     </div>
-         <input id="name" type="hidden"  name="name_give" placeholder="EX)OO이의 일기"/>
+         <input id="name_give" type="admin" />
 
         <input id="uploadFile"  name="img_give" type='file'  accept="image/*"  alt="파일첨부" value=""/>
         <input id="upload" onclick="fileCheck() " value="업로드" type="button" />
@@ -55,8 +55,8 @@
 <script>
 function submit(){
 
-      let name = $('#name').val()
-      let text = $('#taxt').val
+      let name = $('#name_give').val()
+      let text = $('#text').val
       let date = $('#datepicker').val()
       let img = $('#uploadFile').val()
 
