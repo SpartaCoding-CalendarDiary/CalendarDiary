@@ -5,16 +5,10 @@
     <title>read</title>
 </head>
 <style>
-    .wrap {
-        width: 80vw;
-        height: 150vw;
-        padding: 16px;
-        margin: auto;
-    }
 
 </style>
 <body>
- <div id="view_diaries">
+ <div id="showdiaries">
 </div>
 </body>
 <script>
@@ -29,7 +23,7 @@
                     let name = diaries[i]['name']
                     let img = diaries[i]['img']
                     let text = diaries[i]['text']
-                    let date = diaries[i]['text']
+                    let date = diaries[i]['date']
 
 
                     let temp_html = `
