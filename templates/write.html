@@ -16,12 +16,19 @@
         padding: 16px;
         text-align: center;
     }
+    h1{
+        font-size: 30px;
+    }
+    textarea{
+        resize: none;
+        width: 80vw;
+        height: 50vh;
+    }
 
 
 </style>
 <body>
-
-
+<div id="includedContent"></div>
 <div class="write">
     <h3>오늘 하루를 적어보세요</h3>
 
@@ -126,6 +133,9 @@ function submit(){
 
 }
 
+$(function () {
+        $("#includedContent").load("/menubar");
+    });
 
 
 </script>
