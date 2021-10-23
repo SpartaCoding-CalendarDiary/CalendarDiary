@@ -1,8 +1,10 @@
 from flask import Flask, render_template, request, jsonify
+from settings import DATABASES
 app = Flask(__name__)
 
 from pymongo import MongoClient
-client = MongoClient('mongodb://test:test@비밀', 27017)
+
+client = MongoClient(f'mongodb://{DATABASES.get("username")}:{DATABASES.get("password")}@{DATABASES.get("address")}', 27017)
 
 db = client.dbcalendardiary
 
