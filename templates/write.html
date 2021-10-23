@@ -20,6 +20,7 @@
         font-size: 30px;
     }
 
+
   textarea{
       resize: none;
       width: 80vw;
@@ -33,88 +34,108 @@
 <div class="write">
     <h1>오늘 하루를 적어보세요</h1>
     <p>date
-        <input value="" type="text" id="datepicker" required>
+        <input value="" name="date_give" type="text" id="datepicker">
     </p>
-        <div class="in_text">
-            <textarea id="text" value="" style="margin-top: 16px;" name="content" placeholder="내용을 입력해주세요" rows="20" cols="80" required></textarea>
-        </div>
-        <input id="name"  value="" required>
-        <input id="uploadFile"type='file' onsubmit="fileCheck()" alt="파일첨부" value="" required>
-        <button id="upload" type="submit" onclick=" write_diary();">업로드</button>
+    <div class="in_text">
+        <textarea id="text" value="" style="margin-top: 16px;" name="text_give" placeholder="내용을 입력해주세요" rows="20"
+                  cols="80" required></textarea>
+    </div>
+         <input id="name" type="hidden"  name="name_give" placeholder="EX)OO이의 일기"/>
+
+        <input id="uploadFile"  name="img_give" type='file'  accept="image/*"  alt="파일첨부" value=""/>
+        <input id="upload" onclick="fileCheck() " value="업로드" type="button" />
+
+
+
 
 
 </div>
 
 </body>
-<script type="text/javascript">
-    function fileCheck(){
-        let uploadFile =document.getElementById("uploadFile").files[0];
-        let fileName = uploadFile.name;
 
-        let ext = fileName.substring(fileName.lastIndexOf('.'));
+<script>
+function submit(){
 
-
-        if(ext == ".JPG" || ext ==".JPEG" || ext == ".PNG" || ext == "GIF" )
-            return true;
-        alert("파일 확장자를 확인해주세요(jpg,jpeg,png,gif) 가능")
-            return false;}
-
-
-    function write_diary(){
-
-
-      let name = document.querySelector("#name").value;
-      let text = document.querySelector("#text").value;
-      let date = document.querySelector("#datepicker").value;
-      let img = document.querySelector("#uploadFile").value;
-
-      if (!img){
-          console.log("비어있다")
-      }else{
-          console.log("값있다")
-      }
-
+      let name = $('#name').val()
+      let text = $('#taxt').val
+      let date = $('#datepicker').val()
+      let img = $('#uploadFile').val()
 
         $.ajax({
         type: "POST",
         url:  "/diaries",
         data: {img_give:img,text_give:text,date_give:date,name_give:name},
         success: function (response) {
-            if (response["result"] == "success")
-            {alert(response["msg"] );}
+           if(response["msg"] =='저장성공'){
+                alert('업로드 완료')
+                window.location.href='/'}
+            else {
+                alert(response['msg']);
+                window.location.reload()
+            }
             }
 
-    })}
+    })
+}
+
+    function fileCheck() {
+        let fileName = $("#uploadFile").val();
+        let ext = fileName.substring(fileName.lastIndexOf('.'), fileName.length).toUpperCase();
+        if (ext == ".JPG" || ext == ".JPEG" || ext == ".PNG" || ext == ".GIF") {
+            submit()
+        } else {
+            alert("jpg,jpeg,png,gif의 사진을 업로드 해주세요!")
+            return false;
+        }
+    
+}
 
 
-
- $(function() {
-       //input을 datepicker로 선언
-       $("#datepicker").datepicker({
-           dateFormat: 'yy-mm-dd' //달력 날짜 형태
-           ,showOtherMonths: true //빈 공간에 현재월의 앞뒤월의 날짜를 표시
-           ,showMonthAfterYear:true // 월- 년 순서가아닌 년도 - 월 순서
-           ,changeYear: true //option값 년 선택 가능
-           ,changeMonth: true //option값  월 선택 가능
-           ,showOn: "both" //button:버튼을 표시하고,버튼을 눌러야만 달력 표시 ^ both:버튼을 표시하고,버튼을 누르거나 input을 클릭하면 달력 표시
-           ,buttonImage: "http://jqueryui.com/resources/demos/datepicker/images/calendar.gif" //버튼 이미지 경로
-           ,buttonImageOnly: true //버튼 이미지만 깔끔하게 보이게함
-           ,buttonText: "선택" //버튼 호버 텍스트
-           ,yearSuffix: "년" //달력의 년도 부분 뒤 텍스트
-           ,monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'] //달력의 월 부분 텍스트
-           ,monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'] //달력의 월 부분 Tooltip
-           ,dayNamesMin: ['일','월','화','수','목','금','토'] //달력의 요일 텍스트
-           ,dayNames: ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'] //달력의 요일 Tooltip
-           ,minDate: "-5Y" //최소 선택일자(-1D:하루전, -1M:한달전, -1Y:일년전)
-           ,maxDate: "+5y" //최대 선택일자(+1D:하루후, -1M:한달후, -1Y:일년후)
-       });
-
-       //초기값을 오늘 날짜로 설정해줘야 합니다.
-       $('#datepicker').datepicker('setDate', 'today'); //(-1D:하루전, -1M:한달전, -1Y:일년전), (+1D:하루후, -1M:한달후, -1Y:일년후)
-   });
+    $(function () {
+        //input을 datepicker로 선언
+        $("#datepicker").datepicker({
+            dateFormat: 'yy-mm-dd'
+            , showOtherMonths: true
+            , showMonthAfterYear: true
+            , changeYear: true
+            , changeMonth: true
+            , showOn: "both"
+            , buttonImage: "http://jqueryui.com/resources/demos/datepicker/images/calendar.gif"
+            , buttonImageOnly: true
+            , buttonText: "선택"
+            , yearSuffix: "년"
+            , monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월']
+            , monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월']
+            , dayNamesMin: ['일', '월', '화', '수', '목', '금', '토']
+            , dayNames: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일']
+            , minDate: "-5Y"
+            , maxDate: "+5y"
+        });
 
 
- $(function () {
+        $('#datepicker').datepicker('setDate', 'today');
+    });
+
+ $('#myForm').submit(function() {
+    $(this).ajaxSubmit(option);
+    return false;});
+     let option = {
+    dataType : '',
+    url: "/diaries",
+    success: function(response){
+        if(response['result']== "success")
+        {alert(response['msg']);
+        window.location.href='/';}
+        else {
+            alert(response['msg']);
+            window.location.reload();
+        }
+    }
+
+}
+
+
+$(function () {
         $("#includedContent").load("/menubar");
     });
 
