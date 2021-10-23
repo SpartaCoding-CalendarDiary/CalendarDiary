@@ -19,19 +19,20 @@
     h1{
         font-size: 30px;
     }
-    textarea{
-        resize: none;
-        width: 80vw;
-        height: 50vh;
-    }
 
 
+  textarea{
+      resize: none;
+      width: 80vw;
+      height: 50vh;
+      margin-bottom: 16px;
+  }
 </style>
 <body>
 <div id="includedContent"></div>
-<div class="write">
-    <h3>오늘 하루를 적어보세요</h3>
 
+<div class="write">
+    <h1>오늘 하루를 적어보세요</h1>
     <p>date
         <input value="" name="date_give" type="text" id="datepicker">
     </p>
@@ -132,6 +133,7 @@ function submit(){
     }
 
 }
+
 
 $(function () {
         $("#includedContent").load("/menubar");
