@@ -22,9 +22,21 @@ def write():
 def menubar():
    return render_template('menubar.html')
 
-@app.route('/aboutus')
+@app.route('/cards')
 def aboutus():
-   return render_template('aboutus.html')
+   return render_template('cards.html')
+
+@app.route('/contents')
+def aboutus():
+   return render_template('cards.html')
+
+# @app.route('/aboutus')
+# def aboutus():
+#    return render_template('aboutus.html')
+
+
+
+
 
 ## API역할을 하는 부분
 #유저가 작성한 글을 저장한다(front->server)
@@ -55,12 +67,22 @@ def write_diary():
 #
 #해당 날짜(key)의 글을 불러온다(server->front)
 #이 API는 글을 실제로 불러올 때
-# @app.route('/diaries', methods=['GET']) #은찬
-# def show_diary():
-#     변수명 = db.diaries.find_one({'찾을key': 찾을value})
-#     return jsonify({'변수명s': 변수명})
-#
+@app.route('/diaries', methods=['GET']) #은찬
+def show_diary():
+    find = db.diaries.find_one({'name': 'names'})
+    return jsonify({'finds': find})
+
 #해당 날짜의 사진을 불러온다(server->front)
+
+
+#일기장의 글을 불러온다(server->front)
+@app.route('/contents', methods=['GET']) #은찬
+def show_contents():
+    get = db.diaries.find_one({'text': 'texts'})
+    return jsonify({'gets': get})
+
+
+
 @app.route('/calendar', methods=['GET'])
 def read_calendar():
      allPic = list(db.diaries.find({},{'_id':False}))
