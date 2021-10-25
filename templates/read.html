@@ -5,40 +5,55 @@
     <title>read</title>
 </head>
 <style>
-
+ #view_diaries{
+    text-align: center;
+}
+textarea{
+    resize: none;
+}
+.comment{
+    width: 450px;
+    height: 50px;
+    margin-top: 16px;
+}
 </style>
 <body>
- <div id="showdiaries">
+<div id="view_diaries">
 </div>
 </body>
 <script>
-    function showdiaries() {
+    $(document).ready(function (){
+        show_diaries();
+    });
+    function show_diaries() {
+        let date_give = "2021-10-01"
         $.ajax({
             type: "GET",
-            url: "/diaries",
+            url: "/diaries?="+date_give,
             data: {},
             success: function (response) {
-                let diary = response['diaries']
-                for (let i = 0; i < diaries.length; i++) {
-                    let name = diaries[i]['name']
-                    let img = diaries[i]['img']
-                    let text = diaries[i]['text']
-                    let date = diaries[i]['date']
-
-
+                let diary = response['diary']
+                let name =diary['name']
+                let date = diary['date']
+                let text = diary['text']
+                let img = diary['img']
                     let temp_html = `
-                                    <div class="card" style="width: 18rem;">
-                                      <img class="card-img-top" src="${img}" alt="Card image cap">
-                                      <div class="card-body">
-                                      <h3>${date}</h3>
-                                        <p>${name}</p>
-                                        <p class="card-text">${text}</p>
-                                      </div>
-                                    </div>
+                                        <div class="box">
+                                            <h3>date: ${date}</h3>
+                                            <a>${name}</a>
+                                        <div id="in_img">
+                                            <img src="${img}"/>
+                                        </div>
+                                        <textarea name="content" rows="20" cols="80">${text}</textarea>
+                                        <div>
+                                          <textarea class="comment" placeholder="댓글을 입력해주세요"></textarea>
+                                          <button class="good">❤</button>
+                                        </div>
+                                        </div>
                             `
                     $('#view_diaries').append(temp_html)
                 }
-            }
+
         })
     }
 </script>
