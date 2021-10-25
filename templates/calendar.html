@@ -5,10 +5,7 @@
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Calendar</title>
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <script src="jquery.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <style type="text/css">
         .cal_top {
             text-align: center;
@@ -46,9 +43,32 @@
     <span id="cal_top_month"></span>
     <a href="#" id="moveNextMonth"><span id="nextMonth" class="cal_tit">&gt;</span></a>
 </div>
-<div id="cal_tab" class="cal">
-</div>
-<script>
+<div id="cal_tab" class="cal"></div>
+
+<script type="text/javascript">
+    var today = null;
+    var year = null;
+    var month = null;
+    var firstDay = null;
+    var lastDay = null;
+    var $tdDay = null;
+    var $tdSche = null;
+    var jsonData = null;
+
+    $(document).ready(function () {
+        drawCalendar();
+        read_calendar();
+        initDate();
+        drawDays();
+        //drawSche();
+        $("#movePrevMonth").on("click", function () {
+            movePrevMonth();
+        });
+        $("#moveNextMonth").on("click", function () {
+            moveNextMonth();
+        });
+    });
+
     $(function () {
         $("#includedContent").load("/menubar");
     });
@@ -59,50 +79,25 @@
             url: "/calendar",
             data: {},
             success: function (response) {
-                let allPics = response['all_allPics']
-                for (let i = 0; i < allPics.length; i++) {
-                    let image = allPics[i]['image']
-                    let date= allPics[i]['date']
-                    /*if (date == 날짜데이터?? ) {
-                        temp_html = `<div class="cal-schedule"><img class="image-thumbnail"src = "${image}"></div>`
+                let pics = response['allPics']
+                let dates = [];
+                //console.log(pics) //the ajax result
+                for (let i = 0; i < pics.length; i++) {
+                    let img = pics[i]['img']
+                    let picYear = pics[i]['date'].split('-')[0]
+                    let picMonth = pics[i]['date'].split('-')[1]
+                    let picDay = pics[i]['date'].split('-')[2]
+                    dates[i] = {
+                        image:img,
+                        year:picYear,
+                        month:picMonth,
+                        day:picDay
                     }
-                    else {
-
-                    }
-                    $('#cal_tab').append(temp_html)*/
-
                 }
-
-
+                drawPicture(dates);
             }
         })
-
     }
-
-</script>
-<script type="text/javascript">
-
-    var today = null;
-    var year = null;
-    var month = null;
-    var firstDay = null;
-    var lastDay = null;
-    var $tdDay = null;
-    var $tdSche = null;
-    var jsonData = null;
-    $(document).ready(function () {
-        drawCalendar();
-        initDate();
-        drawDays();
-        drawSche();
-        read_calendar();
-        $("#movePrevMonth").on("click", function () {
-            movePrevMonth();
-        });
-        $("#moveNextMonth").on("click", function () {
-            moveNextMonth();
-        });
-    });
 
     //Calendar 그리기
     function drawCalendar() {
@@ -114,7 +109,7 @@
             for (var j = 0; j < 7; j++) {
                 setTableHTML += '<td style="text-overflow:ellipsis;overflow:hidden;white-space:nowrap">';
                 setTableHTML += '    <div class="cal-day"></div>';
-                setTableHTML += '    <div class="cal-schedule"><img class="image-thumbnail"src = ""></div>';
+                setTableHTML += '    <div class="cal-schedule"></div>';
                 setTableHTML += '</td>';
             }
             setTableHTML += '</tr>';
@@ -123,9 +118,18 @@
         $("#cal_tab").html(setTableHTML);
     }
 
+    function drawPicture(dates){
+        for(const date of dates) {
+            //console.log(date.year, date.month, date.day)
+            if (date.year == year && date.month==month) {
+                $tdSche.eq(firstDay.getDay() + parseInt(date.day)-1).html("<img src='"+date.image+"' />")
+            }
+        }
+    }
+
     //날짜 초기화
     function initDate() {
-        $tdDay = $("td div.cal-day")
+        $tdDay = $("td div.cal-day") //날짜
         $tdSche = $("td div.cal-schedule")
         dayCount = 0;
         today = new Date();
@@ -140,8 +144,8 @@
 
     //calendar 날짜표시
     function drawDays() {
-        $("#cal_top_year").text(year);
-        $("#cal_top_month").text(month);
+        $("#cal_top_year").text(year); //년도
+        $("#cal_top_month").text(month); //월
         for (var i = firstDay.getDay(); i < firstDay.getDay() + lastDay.getDate(); i++) {
             $tdDay.eq(i).text(++dayCount);
         }
@@ -188,11 +192,12 @@
         firstDay = new Date(year, month - 1, 1);
         lastDay = new Date(year, month, 0);
         drawDays();
-        drawSche();
+        //drawSche();
+        read_calendar();
     }
 
 
-    //데이터 등록
+    //공휴일 등록
     function setData() {
         jsonData =
             {
@@ -208,6 +213,9 @@
                     , "09": {
                         "13": "추석"
                         , "23": "추분"
+                    }
+                    , "10": {
+                        "31": "Halloween"
                     }
                 }
             }
