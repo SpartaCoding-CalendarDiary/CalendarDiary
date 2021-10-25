@@ -27,20 +27,19 @@
         font-size: 40px;
     }
 
-    textarea {
-        resize: none;
-        width: 80vw;
-        height: 50vh;
-        margin-bottom: 16px;
-    }
 
-
+  textarea{
+      resize: none;
+      width: 80vw;
+      height: 50vh;
+      margin-bottom: 16px;
+  }
 </style>
 <body>
 <div id="includedContent"></div>
+
 <div class="write">
     <h1>오늘 하루를 적어보세요</h1>
-
     <p>date
         <input value="" type="text" id="datepicker">
     </p>
@@ -143,7 +142,9 @@
 
     }
 
-    $(function () {
+
+
+$(function () {
         $("#includedContent").load("/menubar");
     });
 function fileuploads(){

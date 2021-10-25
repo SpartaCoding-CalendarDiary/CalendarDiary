@@ -31,7 +31,7 @@ def aboutus():
 @app.route('/diaries', methods=['POST'])  # 은찬
 def write_diary():
     text_receive = request.form['text_give']
-    img_receive = request.form['img_give']
+    img_receive = request.form['img_give'] # img path
     date_receive = request.form['date_give']
     name_receive = request.form['name_give']
     doc = {
@@ -55,18 +55,18 @@ def write_diary():
 #
 #해당 날짜(key)의 글을 불러온다(server->front)
 #이 API는 글을 실제로 불러올 때
-# @app.route('/diaries', methods=['GET']) #은찬
-# def show_diary():
-#     변수명 = db.diaries.find_one({'찾을key': 찾을value})
-#     return jsonify({'변수명s': 변수명})
-#
+@app.route('/diaries', methods=['GET'])
+def show_diary():
+    date_receive = request.args.get('date_give')
+    diary = db.diaries.find_one({'date':date_receive})
+    return jsonify({'diary': diary})
+
 #해당 날짜의 사진을 불러온다(server->front)
 @app.route('/calendar', methods=['GET'])
 def read_calendar():
-     allPic = list(db.diaries.find({},{'_id':False}))
-     print(allPic)
-     return jsonify({'allPics': allPic})
-#선진님 front페이지에서 GET해올때 쓸 변수명은 allPics. allPics리스트 안에 사진과 날짜가 여러개 들어있다.
+    allPic = list(db.diaries.find({},{'_id':False}))
+    #print(allPic)
+    return jsonify({'allPics': allPic})
 
 
 if __name__ == '__main__':
