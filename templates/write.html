@@ -50,8 +50,10 @@
     </div>
     <input id="name_give" type="hidden" value="admin"/>
     <div id="output" type="hidden"></div>
-    <button id="uploadFile" onclick="openTextFile()" value="파일첨부" required>사진 첨부</button>
-    <input id="upload" onclick="fileuploads()" value="업로드" type="button"/>
+
+    <button id="uploadFile" onclick="openTextFile()" value="파일첨부">사진 첨부</button>
+    <input id="upload" onclick="fileupdates()" value="업로드" type="button"/>
+
 
 
 </div>
@@ -61,8 +63,6 @@
 <script>
 
     function submit() {
-
-
         let name = $('#name_give').val();
         let text = $('#text').val();
         let date = $('#datepicker').val();
@@ -74,10 +74,12 @@
             success: function (response) {
                 if (response["msg"] == '저장성공') {
                     alert('업로드 완료')
-                    window.location.href = '/'
+
+                    window.location.href = '/';
                 } else {
                     alert(response['msg']);
-                    window.location.reload()
+                    window.location.reload();
+
                 }
             }
 
@@ -123,31 +125,14 @@
         $('#datepicker').datepicker('setDate', 'today');
     });
 
-    $('#myForm').submit(function () {
-        $(this).ajaxSubmit(option);
-        return false;
-    });
-    let option = {
-        dataType: '',
-        url: "/diaries",
-        success: function (response) {
-            if (response['result'] == "success") {
-                alert(response['msg']);
-                window.location.href = '/';
-            } else {
-                alert(response['msg']);
-                window.location.reload();
-            }
-        }
-
-    }
 
 
 
 $(function () {
         $("#includedContent").load("/menubar");
     });
-function fileuploads(){
+
+function fileupdates(){
 
         let fileCheck = document.getElementById("output").value;
         if(!fileCheck){
@@ -157,6 +142,7 @@ function fileuploads(){
         }
 
 }
+
 
     function openTextFile() {
 
