@@ -5,10 +5,16 @@
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300&display=swap" rel="stylesheet">
     <title>Write</title>
 </head>
 
 <style>
+    * {
+        font-family: 'Source Sans Pro', sans-serif;
+        font-weight: bolder;
+    }
+
     .write {
         max-width: 100vw;
         height: 50vh;
@@ -16,8 +22,9 @@
         padding: 16px;
         text-align: center;
     }
-    h1{
-        font-size: 30px;
+
+    h1 {
+        font-size: 40px;
     }
 
 
@@ -34,19 +41,17 @@
 <div class="write">
     <h1>오늘 하루를 적어보세요</h1>
     <p>date
-        <input value="" name="date_give" type="text" id="datepicker">
+        <input value="" type="text" id="datepicker">
     </p>
+    <div class="targetimg"></div>
     <div class="in_text">
-        <textarea id="text" value="" style="margin-top: 16px;" name="text_give" placeholder="내용을 입력해주세요" rows="20"
+        <textarea id="text" value="" style="margin-top: 16px;" placeholder="내용을 입력해주세요" rows="20"
                   cols="80" required></textarea>
     </div>
-         <input id="name" type="hidden"  name="name_give" placeholder="EX)OO이의 일기"/>
-
-        <input id="uploadFile"  name="img_give" type='file'  accept="image/*"  alt="파일첨부" value=""/>
-        <input id="upload" onclick="fileCheck() " value="업로드" type="button" />
-
-
-
+    <input id="name_give" type="hidden" value="admin"/>
+    <div id="output" type="hidden"></div>
+    <button id="uploadFile" onclick="openTextFile()" value="파일첨부" required>사진 첨부</button>
+    <input id="upload" onclick="fileuploads()" value="업로드" type="button"/>
 
 
 </div>
@@ -54,41 +59,43 @@
 </body>
 
 <script>
-function submit(){
 
-      let name = $('#name').val()
-      let text = $('#taxt').val
-      let date = $('#datepicker').val()
-      let img = $('#uploadFile').val()
+    function submit() {
 
+
+        let name = $('#name_give').val();
+        let text = $('#text').val();
+        let date = $('#datepicker').val();
+        let img = $('#output').val();
         $.ajax({
-        type: "POST",
-        url:  "/diaries",
-        data: {img_give:img,text_give:text,date_give:date,name_give:name},
-        success: function (response) {
-           if(response["msg"] =='저장성공'){
-                alert('업로드 완료')
-                window.location.href='/'}
-            else {
-                alert(response['msg']);
-                window.location.reload()
-            }
+            type: "POST",
+            url: "/diaries",
+            data: {img_give: img, text_give: text, date_give: date, name_give: name},
+            success: function (response) {
+                if (response["msg"] == '저장성공') {
+                    alert('업로드 완료')
+                    window.location.href = '/'
+                } else {
+                    alert(response['msg']);
+                    window.location.reload()
+                }
             }
 
-    })
-}
+        })
+    }
+
 
     function fileCheck() {
         let fileName = $("#uploadFile").val();
         let ext = fileName.substring(fileName.lastIndexOf('.'), fileName.length).toUpperCase();
         if (ext == ".JPG" || ext == ".JPEG" || ext == ".PNG" || ext == ".GIF") {
-            submit()
+            return true;
         } else {
             alert("jpg,jpeg,png,gif의 사진을 업로드 해주세요!")
             return false;
         }
-    
-}
+
+    }
 
 
     $(function () {
@@ -116,29 +123,65 @@ function submit(){
         $('#datepicker').datepicker('setDate', 'today');
     });
 
- $('#myForm').submit(function() {
-    $(this).ajaxSubmit(option);
-    return false;});
-     let option = {
-    dataType : '',
-    url: "/diaries",
-    success: function(response){
-        if(response['result']== "success")
-        {alert(response['msg']);
-        window.location.href='/';}
-        else {
-            alert(response['msg']);
-            window.location.reload();
+    $('#myForm').submit(function () {
+        $(this).ajaxSubmit(option);
+        return false;
+    });
+    let option = {
+        dataType: '',
+        url: "/diaries",
+        success: function (response) {
+            if (response['result'] == "success") {
+                alert(response['msg']);
+                window.location.href = '/';
+            } else {
+                alert(response['msg']);
+                window.location.reload();
+            }
         }
+
     }
 
-}
 
 
 $(function () {
         $("#includedContent").load("/menubar");
     });
+function fileuploads(){
 
+        let fileCheck = document.getElementById("output").value;
+        if(!fileCheck){
+        alert("파일을 첨부해 주세요");
+         return false;
+        }else{ submit();
+        }
+
+}
+
+    function openTextFile() {
+
+        let input = document.createElement("input");
+        input.type = "file";
+        input.accept = "image/*";
+        input.id = "uploadInput";
+
+
+        input.click();
+        input.onchange = function (event) {
+            processFile(event.target.files[0]);
+        };
+    }
+
+    function processFile(file) {
+        let reader = new FileReader();
+
+        reader.onload = function () {
+            let result = reader.result;
+            $('#output').val(result);
+            $('#targetImg').attr('src', result);
+        };
+        reader.readAsDataURL(file);
+    }
 
 </script>
 </html>
