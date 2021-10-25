@@ -1,10 +1,244 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+<html>
+<head profile="http://www.w3.org/2005/10/profile">
+    <link rel="icon" type="image/png" href="http://example.com/myicon.png">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Calendar</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style type="text/css">
+        .cal_top {
+            text-align: center;
+            font-size: 30px;
+        }
+
+        .cal {
+            text-align: center;
+        }
+
+        table.calendar {
+            border: 1px solid black;
+            display: inline-table;
+            text-align: left;
+        }
+
+        table.calendar td {
+            vertical-align: top;
+            border: 1px solid skyblue;
+            width: 100px;
+            padding: 0px; /* 조금 남은 공백 제거  */
+        }
+
+        div.cal-schedule img {
+            width: 100%;
+            display: block;
+        }
+    </style>
 </head>
 <body>
+<div id="includedContent"></div>
+<div class="cal_top">
+    <a href="#" id="movePrevMonth"><span id="prevMonth" class="cal_tit">&lt;</span></a>
+    <span id="cal_top_year"></span>
+    <span id="cal_top_month"></span>
+    <a href="#" id="moveNextMonth"><span id="nextMonth" class="cal_tit">&gt;</span></a>
+</div>
+<div id="cal_tab" class="cal"></div>
 
+<script type="text/javascript">
+    var today = null;
+    var year = null;
+    var month = null;
+    var firstDay = null;
+    var lastDay = null;
+    var $tdDay = null;
+    var $tdSche = null;
+    var jsonData = null;
+
+    $(document).ready(function () {
+        drawCalendar();
+        read_calendar();
+        initDate();
+        drawDays();
+        //drawSche();
+        $("#movePrevMonth").on("click", function () {
+            movePrevMonth();
+        });
+        $("#moveNextMonth").on("click", function () {
+            moveNextMonth();
+        });
+    });
+
+    $(function () {
+        $("#includedContent").load("/menubar");
+    });
+
+    function read_calendar() {
+        $.ajax({
+            type: "GET",
+            url: "/calendar",
+            data: {},
+            success: function (response) {
+                let pics = response['allPics']
+                let dates = [];
+                //console.log(pics) //the ajax result
+                for (let i = 0; i < pics.length; i++) {
+                    let img = pics[i]['img']
+                    let picYear = pics[i]['date'].split('-')[0]
+                    let picMonth = pics[i]['date'].split('-')[1]
+                    let picDay = pics[i]['date'].split('-')[2]
+                    dates[i] = {
+                        image:img,
+                        year:picYear,
+                        month:picMonth,
+                        day:picDay
+                    }
+                }
+                drawPicture(dates);
+            }
+        })
+    }
+
+    //Calendar 그리기
+    function drawCalendar() {
+        var setTableHTML = "";
+        setTableHTML += '<table class="calendar">';
+        setTableHTML += '<tr><th>SUN</th><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th><th>SAT</th></tr>';
+        for (var i = 0; i < 6; i++) {
+            setTableHTML += '<tr height="100">';
+            for (var j = 0; j < 7; j++) {
+                setTableHTML += '<td style="text-overflow:ellipsis;overflow:hidden;white-space:nowrap">';
+                setTableHTML += '    <div class="cal-day"></div>';
+                setTableHTML += '    <div class="cal-schedule"></div>';
+                setTableHTML += '</td>';
+            }
+            setTableHTML += '</tr>';
+        }
+        setTableHTML += '</table>';
+        $("#cal_tab").html(setTableHTML);
+    }
+
+    function drawPicture(dates){
+        for(const date of dates) {
+            //console.log(date.year, date.month, date.day)
+            if (date.year == year && date.month==month) {
+                $tdSche.eq(firstDay.getDay() + parseInt(date.day)-1).html("<img src='"+date.image+"' />")
+            }
+        }
+    }
+
+    //날짜 초기화
+    function initDate() {
+        $tdDay = $("td div.cal-day") //날짜
+        $tdSche = $("td div.cal-schedule")
+        dayCount = 0;
+        today = new Date();
+        year = today.getFullYear();
+        month = today.getMonth() + 1;
+        if (month < 10) {
+            month = "0" + month;
+        }
+        firstDay = new Date(year, month - 1, 1);
+        lastDay = new Date(year, month, 0);
+    }
+
+    //calendar 날짜표시
+    function drawDays() {
+        $("#cal_top_year").text(year); //년도
+        $("#cal_top_month").text(month); //월
+        for (var i = firstDay.getDay(); i < firstDay.getDay() + lastDay.getDate(); i++) {
+            $tdDay.eq(i).text(++dayCount);
+        }
+        for (var i = 0; i < 42; i += 7) {
+            $tdDay.eq(i).css("color", "red");
+        }
+        for (var i = 6; i < 42; i += 7) {
+            $tdDay.eq(i).css("color", "blue");
+        }
+    }
+
+    //calendar 월 이동
+    function movePrevMonth() {
+        month--;
+        if (month <= 0) {
+            month = 12;
+            year--;
+        }
+        if (month < 10) {
+            month = String("0" + month);
+        }
+        getNewInfo();
+    }
+
+    function moveNextMonth() {
+        month++;
+        if (month > 12) {
+            month = 1;
+            year++;
+        }
+        if (month < 10) {
+            month = String("0" + month);
+        }
+        getNewInfo();
+    }
+
+    //정보갱신
+    function getNewInfo() {
+        for (var i = 0; i < 42; i++) {
+            $tdDay.eq(i).text("");
+            $tdSche.eq(i).text("");
+        }
+        dayCount = 0;
+        firstDay = new Date(year, month - 1, 1);
+        lastDay = new Date(year, month, 0);
+        drawDays();
+        //drawSche();
+        read_calendar();
+    }
+
+
+    //공휴일 등록
+    function setData() {
+        jsonData =
+            {
+                "2021": {
+                    "07": {
+                        "17": "제헌절"
+                    }
+                    , "08": {
+                        "7": "칠석"
+                        , "15": "광복절"
+                        , "23": "처서"
+                    }
+                    , "09": {
+                        "13": "추석"
+                        , "23": "추분"
+                    }
+                    , "10": {
+                        "31": "Halloween"
+                    }
+                }
+            }
+    }
+
+    //스케줄 그리기
+    function drawSche() {
+        setData();
+        var dateMatch = null;
+        for (var i = firstDay.getDay(); i < firstDay.getDay() + lastDay.getDate(); i++) {
+            var txt = "";
+            txt = jsonData[year];
+            if (txt) {
+                txt = jsonData[year][month];
+                if (txt) {
+                    txt = jsonData[year][month][i];
+                    dateMatch = firstDay.getDay() + i - 1;
+                    $tdSche.eq(dateMatch).text(txt);
+                }
+            }
+        }
+    }
+
+</script>
 </body>
 </html>
