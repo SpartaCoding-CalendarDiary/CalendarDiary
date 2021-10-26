@@ -65,8 +65,8 @@ def write_diary():
 def show_diary():
     date_receive = request.args.get('date_give')
     diary = db.diaries.find_one({'date':date_receive},{'_id':False})
-    new_diary = json.loads(json_util.dumps(diary))
-    return ({'diary': new_diary})
+    diary = json.loads(json_util.dumps(diary))
+    return ({'diary': diary})
 
 #해당 날짜의 사진을 불러온다(server->front)
 @app.route('/calendar', methods=['GET'])
