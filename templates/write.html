@@ -5,7 +5,9 @@
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300&display=swap" rel="stylesheet">
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,300;1,600&display=swap" rel="stylesheet">
     <title>Write</title>
 </head>
 
@@ -30,10 +32,54 @@
 
   textarea{
       resize: none;
-      width: 80vw;
+      border: none;
+      border-color: Transparent;
+      outline: none;
+      width: 50vw;
       height: 50vh;
       margin-bottom: 16px;
+      background-attachment: local;
+      background-image:
+             linear-gradient(to right, white 10px, transparent 10px),
+            linear-gradient(to left, white 10px, transparent 10px),
+            repeating-linear-gradient(white, white 30px, #ccc 30px, #ccc 31px, white 31px);
+      line-height: 31px;
+      padding: 8px 10px;
+}
+
+  #targetImg {
+      width: 50vw;
+      height: 50vh;
   }
+  .btn{
+      text-align: right;
+      padding-bottom: 20px;
+      padding-right: 350px;
+  }
+    #uploadFile{
+        background-color: lightsteelblue;
+        border-radius: 5px;
+        color: white;
+        border: none;
+        font-size: 18px;
+        padding: 5px;
+
+    }
+    #upload{
+        background-color: lightsteelblue;
+        border-radius: 5px;
+        color: white;
+        border: none;
+        font-size: 18px;
+        padding: 5px;
+        margin-left: 10px;
+    }
+    #uploadFile:hover{
+        background-color: lightslategray;
+    }
+   #upload:hover{
+       background-color: lightslategray;
+   }
 </style>
 <body>
 <div id="includedContent"></div>
@@ -43,17 +89,18 @@
     <p>date
         <input value="" type="text" id="datepicker">
     </p>
-    <div class="targetimg"></div>
+    <p>이미지 미리보기</p>
+    <div class="img"><img id="targetImg"></div>
     <div class="in_text">
         <textarea id="text" value="" style="margin-top: 16px;" placeholder="내용을 입력해주세요" rows="20"
                   cols="80" required></textarea>
     </div>
     <input id="name_give" type="hidden" value="admin"/>
     <div id="output" type="hidden"></div>
-
-    <button id="uploadFile" onclick="openTextFile()" value="파일첨부">사진 첨부</button>
+<div class="btn">
+    <button  id="uploadFile" onclick="openTextFile()" value="파일첨부">사진 첨부</button>
     <input id="upload" onclick="fileupdates()" value="업로드" type="button"/>
-
+</div>
 
 
 </div>
@@ -61,7 +108,6 @@
 </body>
 
 <script>
-
     function submit() {
         let name = $('#name_give').val();
         let text = $('#text').val();
