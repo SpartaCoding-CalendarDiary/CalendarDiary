@@ -1,8 +1,10 @@
 from flask import Flask, render_template, request, jsonify
+import json
 from settings import DATABASES
 app = Flask(__name__)
 
-from pymongo import MongoClient
+from pymongo import MongoClient #dumps는 pymongo에서 제공해주는 util
+from bson import json_util
 
 client = MongoClient(f'mongodb://{DATABASES.get("username")}:{DATABASES.get("password")}@{DATABASES.get("address")}', 27017)
 
@@ -16,6 +18,10 @@ def home():
 @app.route('/write')
 def write():
    return render_template('write.html')
+
+@app.route('/read')
+def read():
+   return render_template('read.html')
 
 #(테스트용 링크)
 @app.route('/menubar')
@@ -52,14 +58,15 @@ def write_diary():
     else:
         return jsonify({'msg': '저장실패'})#프론트-글쓰기페이지에서 저장실패라고 alert 띄워야.
 
-#
 #해당 날짜(key)의 글을 불러온다(server->front)
 #이 API는 글을 실제로 불러올 때
+#test - http://localhost:5000/diaries?date_give=2021-10-01
 @app.route('/diaries', methods=['GET'])
 def show_diary():
     date_receive = request.args.get('date_give')
-    diary = db.diaries.find_one({'date':date_receive})
-    return jsonify({'diary': diary})
+    diary = db.diaries.find_one({'date':date_receive},{'_id':False})
+    new_diary = json.loads(json_util.dumps(diary))
+    return ({'diary': new_diary})
 
 #해당 날짜의 사진을 불러온다(server->front)
 @app.route('/calendar', methods=['GET'])
