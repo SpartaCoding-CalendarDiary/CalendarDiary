@@ -4,17 +4,25 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(function () {
+        $("#includedContent").load("/menubar");
+    });
+</script>
 <style>
-        .img-main{
-        width: 901px;
-        height: 1200px;
-        background-image: url(../static/image.jpg);
+    .img-main {
+        object-fit: contain;
+        width: 40vw;
+        height: 70vh;
+        background-image: url(../static/image/image.jpg);
         background-position: center;
         background-size: cover;
         margin: 100px auto auto auto;
     }
 </style>
-<body>
-<div class="img-main"></div>
-</body>
+    <body>
+        <div id="includedContent"></div>
+        <div class="img-main"></div>
+    </body>
 </html>
