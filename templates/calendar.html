@@ -80,14 +80,14 @@
 </div>
 </body>
 <script type="text/javascript">
-    var today = null;
-    var year = null;
-    var month = null;
-    var firstDay = null;
-    var lastDay = null;
-    var $tdDay = null;
-    var $tdSche = null;
-    var jsonData = null;
+    let today = null;
+    let year = null;
+    let month = null;
+    let firstDay = null;
+    let lastDay = null;
+    let $tdDay = null;
+    let $tdSche = null;
+    let jsonData = null;
 
     $(document).ready(function () {
         drawCalendar();
@@ -136,12 +136,12 @@
 
     //Calendar 그리기
     function drawCalendar() {
-        var setTableHTML = "";
+        let setTableHTML = "";
         setTableHTML += '<table class="calendar">';
         setTableHTML += '<tr><th>SUN</th><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th><th>SAT</th></tr>';
-        for (var i = 0; i < 6; i++) {
+        for (let i = 0; i < 6; i++) {
             setTableHTML += '<tr height="100">';
-            for (var j = 0; j < 7; j++) {
+            for (let j = 0; j < 7; j++) {
                 setTableHTML += '<td style="text-overflow:ellipsis;overflow:hidden;white-space:nowrap">';
                 setTableHTML += '    <div class="cal-day"></div>';
                 setTableHTML += '    <div class="cal-schedule" ></div>';
@@ -183,13 +183,13 @@
     function drawDays() {
         $("#cal_top_year").text(year); //년도
         $("#cal_top_month").text(month); //월
-        for (var i = firstDay.getDay(); i < firstDay.getDay() + lastDay.getDate(); i++) {
+        for (let i = firstDay.getDay(); i < firstDay.getDay() + lastDay.getDate(); i++) {
             $tdDay.eq(i).text(++dayCount);
         }
-        for (var i = 0; i < 42; i += 7) {
+        for (let i = 0; i < 42; i += 7) {
             $tdDay.eq(i).css("color", "red");
         }
-        for (var i = 6; i < 42; i += 7) {
+        for (let i = 6; i < 42; i += 7) {
             $tdDay.eq(i).css("color", "blue");
         }
     }
@@ -221,7 +221,7 @@
 
     //정보갱신
     function getNewInfo() {
-        for (var i = 0; i < 42; i++) {
+        for (let i = 0; i < 42; i++) {
             $tdDay.eq(i).text("");
             $tdSche.eq(i).text("");
         }
@@ -261,9 +261,9 @@
     //스케줄 그리기
     function drawSche() {
         setData();
-        var dateMatch = null;
-        for (var i = firstDay.getDay(); i < firstDay.getDay() + lastDay.getDate(); i++) {
-            var txt = "";
+        let dateMatch = null;
+        for (let i = firstDay.getDay(); i < firstDay.getDay() + lastDay.getDate(); i++) {
+            let txt = "";
             txt = jsonData[year];
             if (txt) {
                 txt = jsonData[year][month];
