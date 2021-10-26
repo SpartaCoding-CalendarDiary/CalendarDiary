@@ -75,7 +75,7 @@
 <div id="cal_tab" class="cal"></div>
 <div class="modal">
     <div id="modalBox">
-        <li><a href="./read.html"></a></li>
+        <script>$("#modalBox").load("read");</script>
     </div>
 </div>
 </body>
@@ -107,6 +107,7 @@
         $("#includedContent").load("/menubar");
     });
 
+    //DATA받아오기
     function read_calendar() {
         $.ajax({
             type: "GET",
@@ -153,6 +154,7 @@
     }
 
 
+    //사진 출력
     function drawPicture(dates) {
         for (const date of dates) {
             //console.log(date.year, date.month, date.day)
