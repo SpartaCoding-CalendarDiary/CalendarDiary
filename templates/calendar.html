@@ -12,6 +12,10 @@
             font-size: 30px;
         }
 
+        .cal_tit {
+            color: indigo;
+        }
+
         .cal {
             text-align: center;
         }
@@ -33,18 +37,48 @@
             width: 100%;
             display: block;
         }
+
+        .modal {
+            display: none;
+            z-index: 500;
+            width: 100%;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+
+        #modalBox {
+            position: relative;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -20%);
+            background-color: #ffffff;
+            width: 30%;
+            height: 30%;
+            text-align: center;
+        }
     </style>
 </head>
+
 <body>
 <div id="includedContent"></div>
+
 <div class="cal_top">
-    <a href="#" id="movePrevMonth"><span id="prevMonth" class="cal_tit">&lt;</span></a>
+    <a href="#" id="movePrevMonth"><span class="cal_tit">&lt;&lt;  </span></a>
     <span id="cal_top_year"></span>
     <span id="cal_top_month"></span>
-    <a href="#" id="moveNextMonth"><span id="nextMonth" class="cal_tit">&gt;</span></a>
+    <a href="#" id="moveNextMonth"><span class="cal_tit">  &gt;&gt;</span></a>
 </div>
-<div id="cal_tab" class="cal"></div>
 
+<div id="cal_tab" class="cal"></div>
+<div class="modal">
+    <div id="modalBox">
+        <li><a href="./read.html"></a></li>
+    </div>
+</div>
+</body>
 <script type="text/javascript">
     var today = null;
     var year = null;
@@ -88,10 +122,10 @@
                     let picMonth = pics[i]['date'].split('-')[1]
                     let picDay = pics[i]['date'].split('-')[2]
                     dates[i] = {
-                        image:img,
-                        year:picYear,
-                        month:picMonth,
-                        day:picDay
+                        image: img,
+                        year: picYear,
+                        month: picMonth,
+                        day: picDay
                     }
                 }
                 drawPicture(dates);
@@ -109,7 +143,7 @@
             for (var j = 0; j < 7; j++) {
                 setTableHTML += '<td style="text-overflow:ellipsis;overflow:hidden;white-space:nowrap">';
                 setTableHTML += '    <div class="cal-day"></div>';
-                setTableHTML += '    <div class="cal-schedule"></div>';
+                setTableHTML += '    <div class="cal-schedule" ></div>';
                 setTableHTML += '</td>';
             }
             setTableHTML += '</tr>';
@@ -118,11 +152,12 @@
         $("#cal_tab").html(setTableHTML);
     }
 
-    function drawPicture(dates){
-        for(const date of dates) {
+
+    function drawPicture(dates) {
+        for (const date of dates) {
             //console.log(date.year, date.month, date.day)
-            if (date.year == year && date.month==month) {
-                $tdSche.eq(firstDay.getDay() + parseInt(date.day)-1).html("<img src='"+date.image+"' />")
+            if (date.year == year && date.month == month) {
+                $tdSche.eq(firstDay.getDay() + parseInt(date.day) - 1).html("<img src='" + date.image + "' />")
             }
         }
     }
@@ -239,6 +274,21 @@
         }
     }
 
+    $(function () {
+// 	이미지 클릭시 해당 이미지 모달
+        $("td div.cal-schedule").click(function () {
+            $(".modal").show();
+        });
+
+        //.modal밖에 클릭시 닫힘
+        $(".modal").click(function (e) {
+            if (e.target.className != "modal") {
+                return false;
+            } else {
+                $(".modal").hide();
+            }
+        });
+    });
 </script>
 </body>
 </html>
