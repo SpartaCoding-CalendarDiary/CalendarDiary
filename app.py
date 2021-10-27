@@ -83,7 +83,7 @@ def delete_diary():
     return jsonify({'msg': "삭제완료"})
 
 #다이어리 수정
-@app.route('/delete', methods=['PUT'])
+@app.route('/update', methods=['PUT'])
 def update_diary():
     date_receive = request.args.get('date_give')
     text_receive = request.args.get('text_give')
