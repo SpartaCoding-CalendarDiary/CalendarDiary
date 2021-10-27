@@ -75,6 +75,20 @@ def read_calendar():
     #print(allPic)
     return jsonify({'allPics': allPic})
 
+#다이어리 삭제
+@app.route('/delete', methods=['DELETE'])
+def delete_diary():
+    date_receive = request.args.get('date_give')
+    db.diaries.delete_one({'date': date_receive})
+    return jsonify({'msg': "삭제완료"})
+
+#다이어리 수정
+@app.route('/delete', methods=['PUT'])
+def update_diary():
+    date_receive = request.args.get('date_give')
+    text_receive = request.args.get('text_give')
+    db.diaries.update_one({'date':date_receive},{'$set':{'text':text_receive}})
+    return jsonify({'msg': "수정완료"})
 
 if __name__ == '__main__':
    app.run('0.0.0.0',port=5000,debug=True)
