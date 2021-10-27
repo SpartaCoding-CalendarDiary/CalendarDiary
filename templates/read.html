@@ -10,7 +10,6 @@
 }
 
 #in_img{
-
     width: 50vw;
     height: 50vh;
     object-fit: contain;
@@ -22,6 +21,7 @@
 }
 </style>
 <body>
+<input type="hidden" id="test" value="">
 <div id="view_diaries">
 </div>
 </body>
@@ -30,7 +30,10 @@
         show_diaries();
     });
     function show_diaries() {
-        let date_give = { "date_give": '2021-10-28' };
+        let abc = $('#test').val();
+        console.log(abc);
+
+        let date_give = { "date_give": abc };
         $.ajax({
             type: "GET",
             url: "/diaries",
