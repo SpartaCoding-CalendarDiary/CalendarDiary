@@ -1,13 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head profile="http://www.w3.org/2005/10/profile">
-    <link rel="icon" type="image/png" href="http://example.com/myicon.png">
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Calendar</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://kit.fontawesome.com/2f61ce9ce6.js" crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -76,22 +72,23 @@
 </head>
 
 <body>
-<div id="includedContent"></div>
+    <div id="includedContent"></div>
 
-<div class="cal_top">
-    <a href="#" id="movePrevMonth"><span class="cal_tit">&lt;&lt;  </span></a>
-    <span id="cal_top_year"></span>
-    <span id="cal_top_month"></span>
-    <a href="#" id="moveNextMonth"><span class="cal_tit">  &gt;&gt;</span></a>
-</div>
-
-<div id="cal_tab" class="cal"></div>
-<div class="modal">
-    <div id="modalBox">
-        <script>$("#modalBox").load("read");</script>
+    <div class="cal_top">
+        <a href="#" id="movePrevMonth"><span class="cal_tit">&lt;&lt;  </span></a>
+        <span id="cal_top_year"></span>
+        <span id="cal_top_month"></span>
+        <a href="#" id="moveNextMonth"><span class="cal_tit">  &gt;&gt;</span></a>
     </div>
-</div>
-</body>
+
+    <div id="cal_tab" class="cal"></div>
+
+    <div class="modal">
+        <div id="modalBox">
+        </div>
+    </div>
+
+
 <script type="text/javascript">
     let today = null;
     let year = null;
@@ -101,6 +98,7 @@
     let $tdDay = null;
     let $tdSche = null;
     let jsonData = null;
+    let date_give = null;
 
     $(document).ready(function () {
         drawCalendar();
@@ -246,7 +244,6 @@
         read_calendar();
     }
 
-
     //공휴일 등록
     function setData() {
         jsonData =
@@ -292,7 +289,17 @@
     $(function () {
 // 	이미지 클릭시 해당 이미지 모달
         $("td div.cal-schedule").click(function () {
+            let theday = this.previousElementSibling.innerText //클릭칸 날짜
+            let thedayformat = theday.padStart(2,'0') //1자리수 2자리수로
+            date_give = year + '-'+ month + '-' + thedayformat //최종 date변수
+            console.log(date_give)
+            $("#testmodal").val(date_give);
             $(".modal").show();
+
+            $("#modalBox").load("read", callback);
+            function callback(){
+                $('#test').val(date_give);
+            }
         });
 
         //.modal밖에 클릭시 닫힘
@@ -305,5 +312,6 @@
         });
     });
 </script>
+
 </body>
 </html>
