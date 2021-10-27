@@ -8,13 +8,17 @@
  #view_diaries{
     text-align: center;
 }
-textarea{
-    resize: none;
+
+#in_img{
+
+    width: 50vw;
+    height: 50vh;
+    object-fit: contain;
+    margin-bottom: 16px;
 }
-.comment{
-    width: 450px;
-    height: 50px;
-    margin-top: 16px;
+.in_text{
+    padding-right: 45px;
+    padding-left: 45px;
 }
 </style>
 <body>
@@ -26,11 +30,11 @@ textarea{
         show_diaries();
     });
     function show_diaries() {
-        let date_give = "2021-10-01"
+        let date_give = { "date_give": '2021-10-28' };
         $.ajax({
             type: "GET",
-            url: "/diaries?="+date_give,
-            data: {},
+            url: "/diaries",
+            data: date_give,
             success: function (response) {
                 let diary = response['diary']
                 let name =diary['name']
@@ -40,15 +44,9 @@ textarea{
                     let temp_html = `
                                         <div class="box">
                                             <h3>date: ${date}</h3>
-                                            <a>${name}</a>
-                                        <div id="in_img">
-                                            <img src="${img}"/>
-                                        </div>
-                                        <textarea name="content" rows="20" cols="80">${text}</textarea>
-                                        <div>
-                                          <textarea class="comment" placeholder="댓글을 입력해주세요"></textarea>
-                                          <button class="good">❤</button>
-                                        </div>
+                                            <p>${name}</p>
+                                            <img id="in_img" src="${img}">
+                                        <div class="in_text" >${text}</div>
                                         </div>
                             `
                     $('#view_diaries').append(temp_html)
