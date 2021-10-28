@@ -2,60 +2,141 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,300;1,600&display=swap"
+          rel="stylesheet">
     <title>read</title>
 </head>
 <style>
- #view_diaries{
-    text-align: center;
-}
+    * {
+        font-family: 'Source Sans Pro', sans-serif;
+        font-weight: bolder;
+    }
 
-#in_img{
-    width: 50vw;
-    height: 50vh;
-    object-fit: contain;
-    margin-bottom: 16px;
-}
-.in_text{
-    padding-right: 45px;
-    padding-left: 45px;
-}
+    .box {
+        text-align: center;
+    }
+
+    h1 {
+        font-weight: bold;
+
+    }
+
+    #in_img {
+        width: 50vw;
+        height: 50vh;
+        object-fit: contain;
+        margin-bottom: 16px;
+    }
+
+    #in_text {
+        padding-right: 60px;
+        padding-left: 60px;
+        margin-bottom: 20px;
+        background-attachment: local;
+        background-image: linear-gradient(to right, white 50px, transparent 10px),
+        linear-gradient(to left, white 50px, transparent 10px),
+        repeating-linear-gradient(white, white 30px, #ccc 30px, #ccc 31px, white 31px);
+        line-height: 31px;
+
+    }
+
+    .btn {
+        text-align: right;
+        margin-right: 30px;
+    }
+
+    button {
+        background-color: lightsteelblue;
+        border-radius: 5px;
+        color: white;
+        border: none;
+        font-size: 18px;
+        padding: 5px;
+        margin-left: 10px;
+    }
+
+    button:hover {
+        background-color: lightslategray;
+    }
 </style>
 <body>
-<input type="hidden" id="test" value="">
-<div id="view_diaries">
-</div>
+    <input type="hidden" id="test" value="">
+    <div class="box">
+        <h1 id="in_date"></h1>
+        <img id="in_img" src="">
+        <h3 id="in_text"></h3>
+    </div>
+    <div class="btn">
+        <button onclick="update_diary()">수정</button>
+        <button onclick="delete_write()">삭제</button>
+    </div>
 </body>
 <script>
-    $(document).ready(function (){
+    $(document).ready(function () {
         show_diaries();
     });
+
     function show_diaries() {
         let abc = $('#test').val();
-        console.log(abc);
+        //console.log(abc);
 
-        let date_give = { "date_give": abc };
+        let date_give = {"date_give": abc};
         $.ajax({
             type: "GET",
             url: "/diaries",
             data: date_give,
             success: function (response) {
                 let diary = response['diary']
-                let name =diary['name']
+                let name = diary['name']
                 let date = diary['date']
                 let text = diary['text']
                 let img = diary['img']
-                    let temp_html = `
-                                        <div class="box">
-                                            <h3>date: ${date}</h3>
-                                            <p>${name}</p>
-                                            <img id="in_img" src="${img}">
-                                        <div class="in_text" >${text}</div>
-                                        </div>
-                            `
-                    $('#view_diaries').append(temp_html)
-                }
+                let temp_html = `<div>${text}</div>`
+                $('#in_date').append(date);
+                $('#in_img').attr("src",img);
+                $('#in_text').append(text);
+            }
 
         })
     }
+
+    function delete_write() {
+        let abc = $('#test').val();
+        let date_give = {"date_give": abc};
+        //console.log(date_give)
+        $.ajax({
+            type: "GET",
+            url: "/delete",
+            data: date_give,
+            success: function (response) {
+                if (response["msg"] == '삭제완료') {
+                    alert('삭제 완료되었습니다')
+                    window.location.href = '/'
+                }
+            }
+        })
+    };
+
+    function update_diary() {
+        let abc = $('#test').val();
+        let def = $('#in_text').text();
+        let aaa = $('#in_text').val();
+        let bbb = $('#in_text').innerText;
+
+        console.log(def,aaa,bbb)
+        let date_give = {"date_give": abc, "text_give": def}
+        $.ajax({
+            type: "GET",
+            url: "/update",
+            data: date_give,
+            success: function (response) {
+                if (response["msg"] == '수정완료') {
+                    alert('수정 완료되었습니다')
+                }
+            }
+        })
+    };
 </script>
 </html>
