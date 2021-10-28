@@ -42,7 +42,7 @@
 
     }
 
-    textarea {
+textarea {
         resize: none;
         width: 40vw;
         height: 25vh;
@@ -54,8 +54,6 @@
         border: none;
         outline: none;
         padding: 8px 10px;
-
-
     }
 
     .btn {
@@ -78,16 +76,16 @@
     }
 </style>
 <body>
-<input type="hidden" id="test" value="">
-<div class="box">
-    <h1 id="in_date"></h1>
-    <img id="in_img" src="">
-    <p id="in_text"></p>
-</div>
-<div class="btn">
-    <input type="button" class="button" id="editbtn" onclick="update_button()" value="수정하기"></input>
-    <input type="button" class="button" onclick="delete_write()" ondblclick="update_diary()" value="삭제"></input>
-</div>
+    <input type="hidden" id="test" value="">
+    <div class="box">
+        <h1 id="in_date"></h1>
+        <img id="in_img" src="">
+        <p id="in_text"></p>
+    </div>
+    <div class="btn">
+        <input type="button" class="button" id="editbtn" onclick="update_button()" value="수정하기"></input>
+        <input type="button" class="button" onclick="delete_write()" value="삭제"></input>
+    </div>
 </body>
 <script>
     $(document).ready(function () {
@@ -96,7 +94,7 @@
 
     function show_diaries() {
         let abc = $('#test').val();
-        console.log(abc);
+        //console.log(abc);
 
         let date_give = {"date_give": abc};
         $.ajax({
@@ -109,55 +107,64 @@
                 let date = diary['date']
                 let text = diary['text']
                 let img = diary['img']
-                let temp_html = `
-                                        <div class="box">
-                                            <h1>${date}</h1>
-                                            <img id="in_img" src="${img}">
-                                        <div id="text" class="in_text" >${text}</div>
-                                        </div>
-                                        <div class="btn">
-                                        <button onclick="update_diary()">수정</button>
-                                        <button onclick="delete_write()">삭제</button>
-                                        </div>
-                            `
-                $('#view_diaries').append(temp_html)
+                let temp_html = `<div>${text}</div>`
+                $('#in_date').append(date);
+                $('#in_img').attr("src",img);
+                $('#in_text').append(text);
             }
 
         })
     }
-    function delete_write(){
+
+    function delete_write() {
         let abc = $('#test').val();
         let date_give = {"date_give": abc};
-        console.log(date_give)
+        //console.log(date_give)
         $.ajax({
             type: "GET",
             url: "/delete",
             data: date_give,
-            success: function (response){
-                 if (response["msg"] == '삭제완료') {
+            success: function (response) {
+                if (response["msg"] == '삭제완료') {
                     alert('삭제 완료되었습니다')
-                     window.location.href='/'
+                    window.location.href = '/'
+                }
+            }
+        })
+    };
 
+    function update_button(){
+        let abc = $('#test').val();
+        let def = $('#in_text').text();
+        console.log(def)
+        $('#editbtn').val('수정완료');
+        console.log($('#editbtn').val());
+        let editedText = $('#in_text').replaceWith("<textarea>"+ def +"</textarea>");
+        //let date_give = {"date_give": abc, "text_give": editedText};
+        if (($('#editbtn').val())==='수정완료'){
+            $('#editbtn').click(function(){
+                alert("j");
+                //$('#editbtn').val('수정하기');
+                window.location.reload();
+            //update_diary(editedText);
+        });
+        }
     }
-            }})};
-function update_diary(){
-    let abc = $('#test').val();
-    let def = $('#text').val();
-    console.log(def)
-    let date_give = {"date_give": abc, "text_give": def}
+
+    function update_diary() {
+        let abc = $('#test').val();
+        //let def = $('#in_text').text();
+        let date_give = {"date_give": abc, "text_give": editedText}
         $.ajax({
             type: "GET",
-            url: "/delete",
+            url: "/update",
             data: date_give,
-            success: function (response){
-                 if (response["msg"] == '수정완료') {
+            success: function (response) {
+                if (response["msg"] == '수정완료') {
                     alert('수정 완료되었습니다')
-
-
-    }
-
-
-    }})};
+                }
+            }
+        })
+    };
 </script>
-</html>
 </html>
