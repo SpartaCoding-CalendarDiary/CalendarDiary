@@ -47,7 +47,7 @@
         margin-right: 30px;
     }
 
-    button {
+    .button {
         background-color: lightsteelblue;
         border-radius: 5px;
         color: white;
@@ -57,7 +57,7 @@
         margin-left: 10px;
     }
 
-    button:hover {
+    .button:hover {
         background-color: lightslategray;
     }
 </style>
@@ -66,11 +66,11 @@
     <div class="box">
         <h1 id="in_date"></h1>
         <img id="in_img" src="">
-        <h3 id="in_text"></h3>
+        <p id="in_text"></p>
     </div>
     <div class="btn">
-        <button onclick="update_diary()">수정</button>
-        <button onclick="delete_write()">삭제</button>
+        <input type="button" class="button" id="editbtn" onclick="update_button()" value="수정하기"></input>
+        <input type="button" class="button" onclick="delete_write()" value="삭제"></input>
     </div>
 </body>
 <script>
@@ -119,14 +119,18 @@
         })
     };
 
-    function update_diary() {
+    function update_button(){
         let abc = $('#test').val();
         let def = $('#in_text').text();
-        let aaa = $('#in_text').val();
-        let bbb = $('#in_text').innerText;
+        console.log(def)
+        $('#editbtn').val('수정완료');
+        let editedText = $('#in_text').replaceWith("<textarea>"+ def +"</textarea>");
+        let date_give = {"date_give": abc, "text_give": editedText};
+        update_diary(date_give);
+    }
 
-        console.log(def,aaa,bbb)
-        let date_give = {"date_give": abc, "text_give": def}
+    function update_diary() {
+        //let date_give = {"date_give": abc, "text_give": hi}
         $.ajax({
             type: "GET",
             url: "/update",
