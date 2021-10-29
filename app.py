@@ -56,7 +56,7 @@ def write_diary():
         return jsonify({'msg': '저장성공'})  #프론트-글저장성공alert->calendar페이지로 이동해야함
     # 가져온 값이 null이 아니면(해당 날짜로 저장된 다이어리가 있으면) DB에 저장하지 않기.
     else:
-        return jsonify({'msg': '저장실패'})#프론트-글쓰기페이지에서 저장실패라고 alert 띄워야.
+        return jsonify({'msg': '일기는 하루에 한번만 쓸 수 있어요!'})#프론트-글쓰기페이지에서 저장실패라고 alert 띄워야.
 
 
 #해당 날짜(key)의 글을 불러온다(server->front)
