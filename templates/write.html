@@ -85,28 +85,26 @@
    }
 </style>
 <body>
-<div id="includedContent"></div>
+    <div id="includedContent"></div>
 
-<div class="write">
-    <h1>오늘 하루를 적어보세요</h1>
-    <p>date
-        <input value="" type="text" id="datepicker">
-    </p>
-    <p>이미지 미리보기</p>
-    <div class="img"><img id="targetImg"></div>
-    <div class="in_text">
-        <textarea id="text" value="" style="margin-top: 16px;" placeholder="내용을 입력해주세요" rows="20"
-                  cols="80" required></textarea>
+    <div class="write">
+        <h1>오늘 하루를 적어보세요</h1>
+        <p>date
+            <input value="" type="text" id="datepicker">
+        </p>
+        <!--<p>이미지 미리보기</p>-->
+        <div class="img"><img id="targetImg"></div>
+        <div class="in_text">
+            <textarea id="text" value="" style="margin-top: 16px;" placeholder="내용을 입력해주세요" rows="20"
+                      cols="80" required></textarea>
+        </div>
+        <input id="name_give" type="hidden" value="admin"/>
+        <div id="output" type="hidden"></div>
+        <div class="btn">
+            <button  id="uploadFile" onclick="openTextFile()" value="사진 첨부">사진 첨부</button>
+            <input id="upload" onclick="fileupdates()" value="업로드" type="button"/>
+        </div>
     </div>
-    <input id="name_give" type="hidden" value="admin"/>
-    <div id="output" type="hidden"></div>
-<div class="btn">
-    <button  id="uploadFile" onclick="openTextFile()" value="파일첨부">사진 첨부</button>
-    <input id="upload" onclick="fileupdates()" value="업로드" type="button"/>
-</div>
-
-
-</div>
 
 </body>
 
@@ -123,20 +121,17 @@
             success: function (response) {
                 if (response["msg"] == '저장성공') {
                     alert('업로드 완료')
-
                     window.location.href = '/';
                 } else {
                     alert(response['msg']);
-                    window.location.reload();
-
                 }
             }
 
         })
     }
 
-
-    function fileCheck() {
+    //확장자 검사
+    /*function fileCheck() {
         let fileName = $("#uploadFile").val();
         let ext = fileName.substring(fileName.lastIndexOf('.'), fileName.length).toUpperCase();
         if (ext == ".JPG" || ext == ".JPEG" || ext == ".PNG" || ext == ".GIF") {
@@ -145,8 +140,7 @@
             alert("jpg,jpeg,png,gif의 사진을 업로드 해주세요!")
             return false;
         }
-
-    }
+    }*/
 
 
     $(function () {
@@ -170,7 +164,6 @@
             , maxDate: "+5y"
         });
 
-
         $('#datepicker').datepicker('setDate', 'today');
     });
 
@@ -182,24 +175,21 @@ $(function () {
     });
 
 function fileupdates(){
-
         let fileCheck = document.getElementById("output").value;
         if(!fileCheck){
-        alert("파일을 첨부해 주세요");
+        alert("오늘을 기념할 사진을 올려주세요");
          return false;
-        }else{ submit();
+        }else{
+            submit();
         }
-
 }
 
 
     function openTextFile() {
-
         let input = document.createElement("input");
         input.type = "file";
         input.accept = "image/*";
         input.id = "uploadInput";
-
 
         input.click();
         input.onchange = function (event) {
