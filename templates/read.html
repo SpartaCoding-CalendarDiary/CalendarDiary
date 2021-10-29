@@ -83,8 +83,8 @@ textarea {
         <p id="in_text"></p>
     </div>
     <div class="btn">
-        <input type="button" class="button" id="editbtn" onclick="update_button()" value="수정하기"></input>
-        <input type="button" class="button" onclick="delete_write()" value="삭제"></input>
+        <input type="button" class="button" id="editbtn" onclick="update_button()" value="수정하기">
+        <input type="button" class="button" onclick="delete_write()" value="삭제">
     </div>
 </body>
 <script>
@@ -93,21 +93,20 @@ textarea {
     });
 
     function show_diaries() {
-        let abc = $('#test').val();
+        let theday = $('#test').val();
         //console.log(abc);
 
-        let date_give = {"date_give": abc};
+        let date_give = {"date_give": theday};
         $.ajax({
             type: "GET",
             url: "/diaries",
             data: date_give,
             success: function (response) {
                 let diary = response['diary']
-                let name = diary['name']
+                //let name = diary['name']
                 let date = diary['date']
                 let text = diary['text']
                 let img = diary['img']
-                let temp_html = `<div>${text}</div>`
                 $('#in_date').append(date);
                 $('#in_img').attr("src",img);
                 $('#in_text').append(text);
@@ -117,8 +116,8 @@ textarea {
     }
 
     function delete_write() {
-        let abc = $('#test').val();
-        let date_give = {"date_give": abc};
+        let theday = $('#test').val();
+        let date_give = {"date_give": theday};
         //console.log(date_give)
         $.ajax({
             type: "GET",
@@ -134,27 +133,15 @@ textarea {
     };
 
     function update_button(){
-        let abc = $('#test').val();
         let def = $('#in_text').text();
-        console.log(def)
-        $('#editbtn').val('수정완료');
-        console.log($('#editbtn').val());
-        let editedText = $('#in_text').replaceWith("<textarea>"+ def +"</textarea>");
-        //let date_give = {"date_give": abc, "text_give": editedText};
-        if (($('#editbtn').val())==='수정완료'){
-            $('#editbtn').click(function(){
-                alert("j");
-                //$('#editbtn').val('수정하기');
-                window.location.reload();
-            //update_diary(editedText);
-        });
-        }
+        $('#editbtn').replaceWith("<input type='button' class='button' onClick='update_diary();' value='수정완료'>");//수정하기버튼을 수정완료로
+        $('#in_text').replaceWith("<textarea id = 'edText'>"+ def +"</textarea>");//글읽기 영역을 글수정 영역으로
     }
 
     function update_diary() {
-        let abc = $('#test').val();
-        //let def = $('#in_text').text();
-        let date_give = {"date_give": abc, "text_give": editedText}
+        let theday = $('#test').val();
+        let editedText = ($('#edText').val());
+        let date_give = {"date_give": theday, "text_give": editedText}
         $.ajax({
             type: "GET",
             url: "/update",
@@ -162,6 +149,9 @@ textarea {
             success: function (response) {
                 if (response["msg"] == '수정완료') {
                     alert('수정 완료되었습니다')
+                    window.location.reload();
+                }else{
+                    alert('수정 실패')
                 }
             }
         })
