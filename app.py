@@ -1,6 +1,8 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+import bcrypt
 import json
 from settings import DATABASES
+
 app = Flask(__name__)
 
 from pymongo import MongoClient #dumps는 pymongo에서 제공해주는 util
@@ -12,7 +14,7 @@ db = client.dbcalendardiary
 ## HTML을 주는 부분
 @app.route('/')
 def home():
-   return render_template('calendar.html')
+   return render_template('index.html')
 
 @app.route('/write')
 def write():
@@ -22,7 +24,6 @@ def write():
 def read():
    return render_template('read.html')
 
-#(테스트용 링크)
 @app.route('/menubar')
 def menubar():
    return render_template('menubar.html')
@@ -31,10 +32,55 @@ def menubar():
 def aboutus():
    return render_template('aboutus.html')
 
+@app.route('/calendar')
+def calendar():
+   return render_template('calendar.html')
+
+@app.route('/login')
+def login():
+   return render_template('login.html')
+
+@app.route('/register')
+def register():
+   return render_template('register.html')
 
 ## API역할을 하는 부분
 #유저가 작성한 글을 저장한다(front->server)
-@app.route('/diaries', methods=['POST'])  # 은찬
+
+@app.route('/')
+def index():
+    if 'name' in session:
+        return 'You are logged in as ' + session['name']
+    return render_template('index.html')
+
+
+# @app.route('/login', methods=['POST'])
+# def login():
+#     login_user = db.users.find_one({'name':request.form['name']})
+#
+#     if login_user:
+#         if bcrypt.hashpw(request.form['password'].encode('utf-8'), login_user['password'].encode('utf-8')) == login_user['password'].encode('utf-8'):
+#             session['name'] = request.form['name']
+#             return redirect(url_for('index'))
+#
+#     return 'Invalid username/password combination'
+#
+#
+# @app.route('/register', methods=['POST','GET'])
+# def register():
+#     if request.method == 'POST':
+#         existing_user = db.users.find_one({'name':request.form['name']})
+#         #diary = db.diaries.find_one({'date': date_receive}, {'_id': False})
+#         if existing_user is None:
+#             hashpass = bcrypt.hashpw(request.form['password'].encode('utf-8'), bcrypt.gensalt())
+#             db.users.insert_one({'name':request.form['name'], 'password':hashpass})
+#             session['name'] = request.form['name']
+#             return redirect(url_for('index'))
+#         return 'That username already exists!'
+#     return render_template('register.html')
+
+
+@app.route('/diaries', methods=['POST'])
 def write_diary():
     text_receive = request.form['text_give']
     img_receive = request.form['img_give'] # img path
@@ -95,8 +141,8 @@ def delete_diary():
 #다이어리 수정
 @app.route('/update', methods=['GET'])
 def update_diary():
-    print(request)
-    print(request.args)
+    #print(request)
+    #print(request.args)
     date_receive = request.args.get('date_give')
     text_receive = request.args.get('text_give')
     result = db.diaries.update_one({'date':date_receive},{'$set':{'text':text_receive}})
