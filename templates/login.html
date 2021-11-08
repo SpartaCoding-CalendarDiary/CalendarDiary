@@ -1,12 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <meta charset="UTF-8"> 
+    <script src="https://kit.fontawesome.com/2f61ce9ce6.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,300;1,600&display=swap"rel="stylesheet">
     <title>login</title>
 </head>
+<style>
+    .wrap{
+        text-align: center;
+        position:absolute;
+        left:50%;
+        margin-left:-150px;
+        height: 100vh;
+        
+    }
+    h1{
+        font-size: 50px;
+    }
+    p{
+        font-size: 20px;
+    }
+    #login{
+        background-color: lightsteelblue;
+        border-radius: 5px;
+        color: white;
+        border: none;
+        font-size: 18px;
+        padding: 5px;
+        text-align: right;
+    }
+    #login:hover{
+        background-color: lightslategray;
+    }
+    .sign_up{
+        color: black;
+    }
+    
+</style>
+<script>
+$(function () {
+        $("#includedContent").load("/menubar");
+    });
+
+</script>
 <body>
-    <h1>Login page</h1>
-    <a href="{{url_for('register')}}">Don't have an account? Sign up! </a><br>
+    <div id="includedContent"></div>
+
+    <div class="wrap">
+        <h1>Login page</h1>
+        <form method="POST" action="/login">
+            <p>ID: <input  name="name" style="margin-left: 6px;" type="text"/></p>
+            <p>PW: <input name="password" type="password"/></p>
+            <p><input id="login" type="submit" value="로그인하기"/></p>
+        </form>
+        <a class="sign_up" href="{{url_for('register')}}">Don't have an account? Sign up! </a>
+    </div>
+
+    
 
 </body>
 </html>
