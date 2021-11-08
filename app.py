@@ -1,13 +1,17 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
-import bcrypt
+import jwt
+import datetime
+import hashlib
 import json
 from settings import DATABASES
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
 from pymongo import MongoClient #dumps는 pymongo에서 제공해주는 util
 from bson import json_util
 
+SECRET_KEY = 'SPARTA'
 client = MongoClient(f'mongodb://{DATABASES.get("username")}:{DATABASES.get("password")}@{DATABASES.get("address")}', 27017)
 db = client.dbcalendardiary
 
@@ -47,37 +51,93 @@ def register():
 ## API역할을 하는 부분
 #유저가 작성한 글을 저장한다(front->server)
 
-@app.route('/')
-def index():
-    if 'name' in session:
-        return 'You are logged in as ' + session['name']
-    return render_template('index.html')
+# @app.route('/')
+# def index():
+#     token_receive = request.cookies.get('mytoken')
+#     try:
+#         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+#
+#         # Client info 보내주기
+#         user_info = db.users.find_one({"username": payload["id"]})
+#         return render_template('index.html', user_info=user_info)
+#
+#     except jwt.ExpiredSignatureError:
+#         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
+#     except jwt.exceptions.DecodeError:
+#         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
 
 
+# Login Sever
 # @app.route('/login', methods=['POST'])
 # def login():
-#     login_user = db.users.find_one({'name':request.form['name']})
+#     # 로그인
+#     username_receive = request.form['username_give']
+#     password_receive = request.form['password_give']
 #
-#     if login_user:
-#         if bcrypt.hashpw(request.form['password'].encode('utf-8'), login_user['password'].encode('utf-8')) == login_user['password'].encode('utf-8'):
-#             session['name'] = request.form['name']
-#             return redirect(url_for('index'))
+#     pw_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
+#     result = db.users.find_one({'username': username_receive, 'password': pw_hash})
 #
-#     return 'Invalid username/password combination'
+#     if result is not None:
+#         payload = {
+#          'id': username_receive,
+#          'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 24시간 유지
+#         }
+#         token = jwt.encode(payload, SECRET_KEY, algorithm='HS256').decode('utf-8')
 #
-#
-# @app.route('/register', methods=['POST','GET'])
+#         return jsonify({'result': 'success', 'token': token})
+#     # 찾지 못하면
+#     else:
+#         return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
+
+# 회원가입 Server
+# @app.route('/register/save', methods=['POST'])
 # def register():
-#     if request.method == 'POST':
-#         existing_user = db.users.find_one({'name':request.form['name']})
-#         #diary = db.diaries.find_one({'date': date_receive}, {'_id': False})
-#         if existing_user is None:
-#             hashpass = bcrypt.hashpw(request.form['password'].encode('utf-8'), bcrypt.gensalt())
-#             db.users.insert_one({'name':request.form['name'], 'password':hashpass})
-#             session['name'] = request.form['name']
-#             return redirect(url_for('index'))
-#         return 'That username already exists!'
-#     return render_template('register.html')
+#     username_receive = request.form['name']
+#     password_receive = request.form['password']
+#     password_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
+#
+#     doc = {
+#         "name": username_receive,
+#         "password": password_hash
+#     }
+#
+#     db.users.insert_one(doc)
+#
+#     return jsonify({'result': 'success'})
+#
+# # id 중복확인 Server
+# @app.route('/register/check_dup', methods=['POST'])
+# def check_dup():
+#     username_receive = request.form['username_give']
+#     exists = bool(db.users.find_one({"username": username_receive}))
+#     return jsonify({'result': 'success', 'exists': exists})
+
+@app.route('/update_like', methods=['POST'])
+def update_like():
+    token_receive = request.cookies.get('mytoken')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+
+        # Like Update API
+        user_info = db.users.find_one({"username": payload["id"]})
+        post_id_receive = request.form["post_id_give"]
+        type_receive = request.form["type_give"]
+        action_receive = request.form["action_give"]
+        doc = {
+            "post_id": post_id_receive,
+            "username": user_info["username"],
+            "type": type_receive
+        }
+        if action_receive == "like":
+            db.likes.insert_one(doc)
+        else:
+            db.likes.delete_one(doc)
+        count = db.likes.count_documents({"post_id": post_id_receive, "type": type_receive})
+        return jsonify({"result": "success", 'msg': 'updated', "count": count})
+
+        return jsonify({"result": "success", 'msg': 'updated'})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
 
 
 @app.route('/diaries', methods=['POST'])
