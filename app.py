@@ -74,14 +74,14 @@ def sign_in():
         return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
 
 # 회원가입 Server
-@app.route('/register/save', methods=['POST'])
-def sign_out():
-    username_receive = request.form['name']
+@app.route('/sign_up/save', methods=['POST'])
+def sign_up():
+    name_receive = request.form['name']
     password_receive = request.form['password']
     password_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
 
     doc = {
-        "name": username_receive,
+        "name": name_receive,
         "password": password_hash
     }
 
@@ -90,10 +90,10 @@ def sign_out():
     return jsonify({'result': 'success'})
 
 # id 중복확인 Server
-@app.route('/register/check_dup', methods=['POST'])
+@app.route('/sign_up/check_dup', methods=['POST'])
 def check_dup():
-    username_receive = request.form['username_give']
-    exists = bool(db.users.find_one({"username": username_receive}))
+    name_receive = request.form['name_give']
+    exists = bool(db.users.find_one({"name": name_receive}))
     return jsonify({'result': 'success', 'exists': exists})
 
 #좋아요
