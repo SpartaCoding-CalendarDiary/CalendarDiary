@@ -1,11 +1,79 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <meta charset="UTF-8">
+    <script src="https://kit.fontawesome.com/2f61ce9ce6.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,300;1,600&display=swap"rel="stylesheet">
     <title>register</title>
 </head>
+<style>
+    .wrap{
+        text-align: center;
+        position:absolute;
+        left:50%;
+        top:50%;
+        margin-left:-150px;
+        margin-top:-150px;
+    }
+
+    h1{
+        font-size: 50px;
+    }
+
+    p{
+        font-size: 20px;
+    }
+
+    #register{
+        background-color: lightsteelblue;
+        border-radius: 5px;
+        color: white;
+        border: none;
+        font-size: 18px;
+        padding: 5px;
+        text-align: right;
+    }
+    #register:hover{
+        background-color: lightslategray;
+    }
+
+    .login{
+        color: black;
+    }
+
+</style>
+<script>
+     $(function () {
+        $("#includedContent").load("/menubar");
+    });
+//    let name = $('#name').val;
+//    let password = $('#pw').val;  
+//    $.ajax({
+//        type:"POST",
+//        url:"/register",
+//        data:{name_give:name,password_give:password},
+//        success:function(response){
+//            function(){
+//            alert('msg');
+//        }
+//
+//    })};
+</script>
 <body>
-    <h1>Register Page</h1>
-    <a href="{{url_for('login')}}">Already have an account? Log In</a><br>
+    <div id="includedContent"></div>
+    <div class="wrap">
+        <h1>Register Page</h1>
+        <form method="POST">
+            <p>ID: <input name="name" id="id_name" type="text"/></p>
+            <p>PW: <input name="password" id="pw" type="password"/></p>
+            <p><input id="register" type="submit" value="회원가입 하기"/></p>
+        </form>
+        <a class="login" href="{{url_for('login')}}">Already have an account? Log In</a>
+    </div>
+    
+    
 </body>
 </html>
