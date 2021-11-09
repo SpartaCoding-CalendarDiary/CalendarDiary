@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+from flask import Flask, render_template, request, jsonify, redirect, url_for
+# from flask_cors import CORS
 import jwt
 import datetime
 import hashlib
@@ -6,19 +7,24 @@ import json
 from settings import DATABASES
 from datetime import datetime, timedelta
 
+
 app = Flask(__name__)
+# CORS(app, resources={r"*": {"origins":"*"}})
+
 
 from pymongo import MongoClient #dumps는 pymongo에서 제공해주는 util
 from bson import json_util
 
 SECRET_KEY = 'SPARTA'
 client = MongoClient(f'mongodb://{DATABASES.get("username")}:{DATABASES.get("password")}@{DATABASES.get("address")}', 27017)
+print(client)
 db = client.dbcalendardiary
+print(db)
 
 ## HTML을 주는 부분
 @app.route('/')
 def home():
-   return render_template('index.html')
+    return render_template('index.html')
 
 @app.route('/write')
 def write():
@@ -42,76 +48,74 @@ def calendar():
 
 @app.route('/login')
 def login():
-   return render_template('login.html')
+    msg = request.args.get('msg')
+    return render_template('login.html', msg=msg)
 
 @app.route('/register')
 def register():
    return render_template('register.html')
 
 ## API역할을 하는 부분
-#유저가 작성한 글을 저장한다(front->server)
-
-# @app.route('/')
-# def index():
-#     token_receive = request.cookies.get('mytoken')
-#     try:
-#         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-#
-#         # Client info 보내주기
-#         user_info = db.users.find_one({"username": payload["id"]})
-#         return render_template('index.html', user_info=user_info)
-#
-#     except jwt.ExpiredSignatureError:
-#         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
-#     except jwt.exceptions.DecodeError:
-#         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
-
 
 # Login Sever
-# @app.route('/login', methods=['POST'])
-# def login():
-#     # 로그인
-#     username_receive = request.form['username_give']
-#     password_receive = request.form['password_give']
-#
-#     pw_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
-#     result = db.users.find_one({'username': username_receive, 'password': pw_hash})
-#
-#     if result is not None:
-#         payload = {
-#          'id': username_receive,
-#          'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 24시간 유지
-#         }
-#         token = jwt.encode(payload, SECRET_KEY, algorithm='HS256').decode('utf-8')
-#
-#         return jsonify({'result': 'success', 'token': token})
-#     # 찾지 못하면
-#     else:
-#         return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
+@app.route('/login', methods=['POST'])
+def sign_in():
+    # 로그인
+    name_receive = request.form['name_give']
+    password_receive = request.form['password_give']
+
+    pw_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
+    result = db.users.find_one({'name': name_receive, 'password': password_receive})
+
+    if result is not None:
+        payload = {
+         'name': name_receive,
+         'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 24시간 유지
+        }
+        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256').decode('utf-8')
+
+        return jsonify({'result': 'success', 'token': token})
+    # 찾지 못하면
+    else:
+        return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
 
 # 회원가입 Server
-# @app.route('/register/save', methods=['POST'])
-# def register():
-#     username_receive = request.form['name']
-#     password_receive = request.form['password']
-#     password_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
-#
-#     doc = {
-#         "name": username_receive,
-#         "password": password_hash
-#     }
-#
-#     db.users.insert_one(doc)
-#
-#     return jsonify({'result': 'success'})
-#
-# # id 중복확인 Server
-# @app.route('/register/check_dup', methods=['POST'])
-# def check_dup():
-#     username_receive = request.form['username_give']
-#     exists = bool(db.users.find_one({"username": username_receive}))
-#     return jsonify({'result': 'success', 'exists': exists})
+@app.route('/sign_up/save', methods=['POST'])
+def sign_up():
+    body = request.json
+    print(body)
+    print(request.data)
+    print(request.query_string)
+    '''
+    curl -X POST localhost:5000/sign_up/save
+        -H "Content-Type: application/json" # like this
+        -d '{"name_give": "hello", "password_give": "world"}'
+    '''
+    name_receive = body.get('username_give')
+    password_receive = body.get('password_give')
+    if not name_receive or not password_receive:
+        return jsonify({'result': 'missing required params'}), 400
 
+    #password_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
+    doc = {
+        "name": name_receive,
+        "password": password_receive
+    }
+    try:
+        db.users.insert_one(doc) # timeout here
+    except Exception as e:
+        print(e)
+
+    return jsonify({'result': 'success'}), 200
+
+# id 중복확인 Server
+@app.route('/sign_up/check_dup', methods=['POST'])
+def check_dup():
+    name_receive = request.form['name_give']
+    exists = bool (db.users.find_one({"name": name_receive}))
+    return jsonify({'result': 'success', 'exists': exists})
+
+#좋아요
 @app.route('/update_like', methods=['POST'])
 def update_like():
     token_receive = request.cookies.get('mytoken')
@@ -119,20 +123,20 @@ def update_like():
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
 
         # Like Update API
-        user_info = db.users.find_one({"username": payload["id"]})
-        post_id_receive = request.form["post_id_give"]
+        user_info = db.users.find_one({"name": payload["name"]})
+        date_receive = request.form["date_give"]
         type_receive = request.form["type_give"]
         action_receive = request.form["action_give"]
         doc = {
-            "post_id": post_id_receive,
-            "username": user_info["username"],
+            "date": date_receive,
+            "name": user_info["name"],
             "type": type_receive
         }
         if action_receive == "like":
             db.likes.insert_one(doc)
         else:
             db.likes.delete_one(doc)
-        count = db.likes.count_documents({"post_id": post_id_receive, "type": type_receive})
+        count = db.likes.count_documents({"date": date_receive, "type": type_receive})
         return jsonify({"result": "success", 'msg': 'updated', "count": count})
 
         return jsonify({"result": "success", 'msg': 'updated'})
@@ -140,6 +144,7 @@ def update_like():
         return redirect(url_for("home"))
 
 
+#유저가 작성한 글을 저장한다(front->server)
 @app.route('/diaries', methods=['POST'])
 def write_diary():
     text_receive = request.form['text_give']
@@ -177,7 +182,7 @@ def show_diary():
 
 
 #해당 날짜의 사진을 불러온다(server->front)
-@app.route('/calendar', methods=['GET'])
+@app.route('/calendarr', methods=['GET'])
 def read_calendar():
     allPic = list(db.diaries.find({},{'_id':False}))
     #print(allPic)
